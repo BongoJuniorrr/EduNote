@@ -11,13 +11,6 @@ ROOT=Path(__file__).resolve().parents[1]
 LABEL='org.edunote.runtime.archive-sha256'
 
 
-def digest(path):
-    value=hashlib.sha256()
-    with path.open('rb') as stream:
-        for block in iter(lambda:stream.read(8*1024*1024),b''):value.update(block)
-    return value.hexdigest()
-
-
 def matches(item,tag):
     result=subprocess.run(['docker','image','inspect',tag,'--format','{{json .Config.Labels}}'],capture_output=True,text=True)
     if result.returncode:return False
@@ -61,9 +54,11 @@ def main():
             if Path(part['name']).name!=part['name']:raise SystemExit('Invalid runtime part name')
             path=ROOT/'runtime'/part['name']
             if not path.is_file():raise SystemExit('Missing runtime part: '+part['name'])
-            if digest(path)!=part['sha256']:raise SystemExit('Checksum mismatch: '+part['name'])
+            part_digest=hashlib.sha256()
             with path.open('rb') as stream:
-                for block in iter(lambda:stream.read(8*1024*1024),b''):combined.update(block)
+                for block in iter(lambda:stream.read(8*1024*1024),b''):
+                    combined.update(block);part_digest.update(block)
+            if part_digest.hexdigest()!=part['sha256']:raise SystemExit('Checksum mismatch: '+part['name'])
             paths.append(path)
         if combined.hexdigest()!=item['archive_sha256']:raise SystemExit('Image archive checksum mismatch')
         command=['docker','image','import','--platform',data['platform']]
