@@ -44,7 +44,9 @@ not install or change host GPU drivers.
 Presenton starts by default. Set its `PRESENTON_OPENAI_BASE_URL`,
 `PRESENTON_OPENAI_API_KEY`, and `PRESENTON_OPENAI_MODEL` in `.env` before starting
 slides, then recreate it after changes. Presenton's provider is configured
-separately from the core Settings page. Use `EDUNOTE_SLIDES=0 bash start.sh` to
+separately from the core Settings page. The owner can also configure it in
+Presenton's own provider interface. A fresh installation starts without API keys;
+slide generation requires completing this configuration. Use `EDUNOTE_SLIDES=0 bash start.sh` to
 omit this optional service. Local Kokoro TTS and heavy GPU OCR require a GPU.
 
 The default bind address is loopback. For a public domain, terminate HTTPS at your

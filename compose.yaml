@@ -114,7 +114,7 @@ services:
       CUSTOM_LLM_URL: ${PRESENTON_OPENAI_BASE_URL:-http://edunote:8001}
       CUSTOM_LLM_API_KEY: ${PRESENTON_OPENAI_API_KEY:-}
       CUSTOM_MODEL: ${PRESENTON_OPENAI_MODEL:-}
-      CAN_CHANGE_KEYS: "false"
+      CAN_CHANGE_KEYS: "true"
       DISABLE_IMAGE_GENERATION: "true"
       NEXT_PUBLIC_BASE_PATH: /slide_pro/_presenton
     volumes: [presenton-data:/app_data]
