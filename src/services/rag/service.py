@@ -141,6 +141,7 @@ class RAGService:
             service = RAGService()
             success = await service.initialize("my_kb", ["doc1.pdf", "doc2.txt"])
         """
+        kb_name = safe_leaf(kb_name)
         self.logger.info(f"Initializing KB '{kb_name}' with provider '{self.provider}'")
         pipeline = self._get_pipeline()
         return await pipeline.initialize(kb_name=kb_name, file_paths=file_paths, **kwargs)
@@ -171,6 +172,7 @@ class RAGService:
             print(result["answer"])
         """
         # Get the provider from KB metadata, fallback to instance provider
+        kb_name = safe_leaf(kb_name)
         provider = self._get_provider_for_kb(kb_name)
         resolved_mode, resolved_kwargs = self._resolve_retrieval_options(
             kb_name=kb_name,
@@ -223,6 +225,7 @@ class RAGService:
         2. KB retrieval_overrides
         3. Request kwargs
         """
+        kb_name = safe_leaf(kb_name)
         try:
             from src.services.config.knowledge_base_config import DEFAULT_CONFIG_PATH
 
@@ -275,6 +278,7 @@ class RAGService:
         Returns:
             Provider name (e.g., 'llamaindex', 'lightrag', 'raganything')
         """
+        kb_name = safe_leaf(kb_name)
         try:
             metadata_file = safe_child(self.kb_base_dir, kb_name) / "metadata.json"
 
@@ -310,6 +314,7 @@ class RAGService:
             service = RAGService()
             success = await service.delete("old_kb")
         """
+        kb_name = safe_leaf(kb_name)
         self.logger.info(f"Deleting KB '{kb_name}'")
         pipeline = self._get_pipeline()
 

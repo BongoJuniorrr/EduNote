@@ -72,7 +72,7 @@ def parse_pdf_with_mineru(pdf_path: str, output_base_dir: str = None):
     print(f"✓ Detected MinerU command: {mineru_cmd}")
 
     project_root = Path(__file__).resolve().parents[3]
-    pdf_path = contained_path(project_root / "data", pdf_path)
+    pdf_path = contained_path(project_root / "data", Path(pdf_path).absolute())
     if not pdf_path.exists():
         print(f"✗ Error: PDF file does not exist: {pdf_path}")
         return False
@@ -86,7 +86,7 @@ def parse_pdf_with_mineru(pdf_path: str, output_base_dir: str = None):
     if output_base_dir is None:
         output_base_dir = project_root / "reference_papers"
     else:
-        output_base_dir = contained_path(project_root / "data" / "user" / "question", output_base_dir)
+        output_base_dir = contained_path(project_root / "data" / "user" / "question", Path(output_base_dir).absolute())
 
     output_base_dir.mkdir(parents=True, exist_ok=True)
 

@@ -76,12 +76,13 @@ def _get_web_search_config() -> dict[str, Any]:
 
 def _save_results(result: dict[str, Any], output_dir: str, provider: str) -> str:
     """Save search results to a JSON file."""
-    output_path = Path(output_dir)
+    from src.security.paths import contained_path, safe_child, safe_leaf
+    output_path = contained_path(Path(__file__).resolve().parents[3] / "data" / "user", Path(output_dir).absolute())
     output_path.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"search_{provider}_{timestamp}.json"
-    file_path = output_path / filename
+    filename = f"search_{safe_leaf(provider)}_{timestamp}.json"
+    file_path = safe_child(output_path, filename)
 
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)

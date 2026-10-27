@@ -1,3 +1,5 @@
+from uuid import uuid4
+from utils.safe_paths import workspace_file
 from typing import List
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -64,13 +66,23 @@ async def upload_image(
     file: UploadFile = File(...), sql_session: AsyncSession = Depends(get_async_session)
 ):
     try:
-        new_filename = get_file_name_with_random_uuid(file)
-        image_path = os.path.join(
-            get_images_directory(), os.path.basename(new_filename)
-        )
-
+        content = await file.read(20 * 1024 * 1024 + 1)
+        if len(content) > 20 * 1024 * 1024:
+            raise HTTPException(status_code=413, detail="Image exceeds 20 MiB")
+        if content.startswith(b"\x89PNG\r\n\x1a\n"):
+            extension = ".png"
+        elif content.startswith(b"\xff\xd8\xff"):
+            extension = ".jpg"
+        elif content.startswith((b"GIF87a", b"GIF89a")):
+            extension = ".gif"
+        elif content.startswith(b"RIFF") and content[8:12] == b"WEBP":
+            extension = ".webp"
+        else:
+            raise HTTPException(status_code=400, detail="Upload a PNG, JPEG, GIF or WebP image")
+        new_filename = str(uuid4()) + extension
+        image_path = workspace_file(os.path.join(get_images_directory(), new_filename))
         with open(image_path, "wb") as f:
-            f.write(await file.read())
+            f.write(content)
 
         image_asset = ImageAsset(path=image_path, is_uploaded=True)
 
@@ -78,8 +90,10 @@ async def upload_image(
         await sql_session.commit()
 
         return serialize_image_asset(image_asset)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to upload image: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=500, detail="Failed to upload image")
 
 
 @IMAGES_ROUTER.get("/uploaded", response_model=List[ImageAsset])

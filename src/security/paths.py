@@ -16,19 +16,28 @@ def safe_leaf(value: str) -> str:
 
 
 def safe_child(base: str | Path, *names: str) -> Path:
-    root = Path(base).resolve()
-    candidate = root.joinpath(*(safe_leaf(name) for name in names)).resolve()
-    if not candidate.is_relative_to(root):
+    root = os.path.realpath(base)
+    if not names:
+        return Path(root)
+    lexical = os.path.abspath(os.path.join(root, *(safe_leaf(name) for name in names)))
+    if not lexical.startswith(root + os.sep):
         raise InvalidPathError("Resource path escapes its workspace")
-    return candidate
+    resolved = os.path.realpath(lexical)
+    if not resolved.startswith(root + os.sep):
+        raise InvalidPathError("Resource path escapes its workspace")
+    return Path(resolved)
 
 
 def contained_path(base: str | Path, value: str | Path) -> Path:
-    root = Path(base).resolve()
-    candidate = Path(value)
-    if not candidate.is_absolute():
-        candidate = root / candidate
-    resolved = candidate.resolve()
-    if resolved != root and not str(resolved).startswith(str(root) + os.sep):
+    root = os.path.realpath(base)
+    lexical = os.path.abspath(os.path.join(root, value))
+    if lexical == root:
+        return Path(root)
+    if not lexical.startswith(root + os.sep):
         raise InvalidPathError("Resource path escapes its workspace")
-    return resolved
+    resolved = os.path.realpath(lexical)
+    if resolved == root:
+        return Path(root)
+    if not resolved.startswith(root + os.sep):
+        raise InvalidPathError("Resource path escapes its workspace")
+    return Path(resolved)

@@ -1,5 +1,5 @@
 import os
-from utils.safe_paths import leaf_name
+from utils.safe_paths import leaf_name, workspace_file
 import uuid
 import shutil
 from pathlib import Path
@@ -258,7 +258,7 @@ async def delete_font(filename: str):
     """
     try:
         fonts_dir = get_fonts_directory()
-        font_path = os.path.join(fonts_dir, leaf_name(filename))
+        font_path = workspace_file(os.path.join(fonts_dir, leaf_name(filename)))
         
         if not os.path.exists(font_path):
             raise HTTPException(

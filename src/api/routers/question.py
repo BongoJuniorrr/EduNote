@@ -180,11 +180,11 @@ async def websocket_mimic_generate(websocket: WebSocket):
                 # Create batch directory for this mimic session
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 pdf_stem = Path(safe_name).stem
-                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{safe_leaf(pdf_stem)}"
+                batch_dir = safe_child(MIMIC_OUTPUT_DIR, f"mimic_{timestamp}_{safe_leaf(pdf_stem)}")
                 batch_dir.mkdir(parents=True, exist_ok=True)
 
                 # Save uploaded PDF in batch directory
-                pdf_path = batch_dir / safe_name
+                pdf_path = safe_child(batch_dir, safe_name)
 
                 await websocket.send_json(
                     {"type": "status", "stage": "upload", "content": f"Saving PDF: {safe_name}"}
@@ -227,7 +227,7 @@ async def websocket_mimic_generate(websocket: WebSocket):
 
                 # Create batch directory for parsed mode too
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{safe_leaf(Path(paper_path).name)}"
+                batch_dir = safe_child(MIMIC_OUTPUT_DIR, f"mimic_{timestamp}_{safe_leaf(Path(paper_path).name)}")
                 batch_dir.mkdir(parents=True, exist_ok=True)
                 output_dir = str(batch_dir)
 

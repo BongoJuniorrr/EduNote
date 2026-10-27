@@ -89,7 +89,8 @@ separately. Run in an isolated workspace; provider calls may incur charges.
 
 ```bash
 python scripts/validation/public_benchmarks.py --help
-# Select the scifact or funsd subcommand shown by --help, then point it at your dataset.
+python scripts/validation/public_benchmarks.py retrieval --dataset /datasets/scifact --output scifact.json
+python scripts/validation/public_benchmarks.py ocr --dataset /datasets/funsd --parser docling --count 10 --output funsd-docling.json
 python scripts/benchmarks/server_performance.py --config /private/provider.json --output server-performance.json
 ```
 
@@ -99,3 +100,14 @@ credentials or the endpoint. Reproduction requires the same model/runtime and ma
 produce different timings. Dataset input hashes and FUNSD IDs are supplied to detect
 selection differences. No end-to-end answer-quality or security claim follows from
 these benchmarks.
+
+## Availability failures observed after the short benchmark
+
+A subsequent direct streaming request to the same Qwen deployment returned HTTP 524
+after 125.37 seconds with no visible content. An EduNote probe also received the
+provider's nested HTTP 429/524 response. Therefore the eight earlier successes must
+not be interpreted as uninterrupted availability. The active Gemini model later
+exhausted its provider's free daily quota; later workflow reruns were blocked by
+provider HTTP 429. No extra provider generation calls were made after confirming
+the exhausted quota. Historical passing workflows and current blocked reruns are
+distinguished in the package validation record.

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { join, resolve, sep } from "path";
 import { existsSync } from "fs";
 
 export async function POST(request: NextRequest) {
@@ -21,7 +21,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Define the layouts directory path
-    const layoutsDir = join(process.cwd(), "app_data", "layouts", layout_name);
+    const layoutsRoot = resolve(process.cwd(), "app_data", "layouts");
+    const layoutsDir = resolve(layoutsRoot, layout_name);
+    if (!layoutsDir.startsWith(layoutsRoot + sep)) {
+      return NextResponse.json({error: "Invalid layout path"}, {status: 400});
+    }
 
     // Create the directory if it doesn't exist
     if (!existsSync(layoutsDir)) {
@@ -45,7 +49,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({error: "Invalid component name"}, {status: 400});
       }
       const fileName = `${component_name}.tsx`;
-      const filePath = join(layoutsDir, fileName);
+      const filePath = resolve(layoutsDir, fileName);
+      if (!filePath.startsWith(layoutsDir + sep)) {
+        return NextResponse.json({error: "Invalid component path"}, {status: 400});
+      }
       const cleanComponentCode = component_code
         .replace(/```tsx/g, "")
         .replace(/```/g, "");

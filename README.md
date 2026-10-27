@@ -18,7 +18,7 @@ Edu Studio, and presentations through Presenton.
 
 Requirements: Linux x86-64, Docker Engine with Compose v2, Python 3, OpenSSL,
 32 GB RAM recommended, and about 40 GB free disk for the full image set and caches.
-A configured LLM provider is required for generation. Internet access is required
+A configured LLM provider with available quota is required for generation. Internet access is required
 for initial model downloads. Model weights, datasets, personal files, and provider
 credentials are deliberately not bundled. NVIDIA GPU is optional; local models
 run much more slowly on CPU.
@@ -57,6 +57,9 @@ there are no accounts, registrations, tenants, or multi-user isolation guarantee
 
 - LLM: OpenAI-compatible APIs, including vLLM, llama.cpp, Ollama/LM Studio and hosted
   endpoints; supported provider adapters can be selected in Settings.
+  `LLM_COMPLETION_TRANSPORT=stream` receives completions over SSE and aggregates
+  the answer internally. Use `buffered` for a provider without streaming support.
+  Streaming cannot overcome an origin that fails to return data before its proxy timeout.
 - Embeddings: local Hugging Face sentence-transformers or configured remote APIs.
   E5 multilingual large instruct is a tested 1024-dimensional option with a
   **512-token** model context. Changing model/dimension requires reindexing.
