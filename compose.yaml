@@ -115,9 +115,12 @@ services:
       CUSTOM_LLM_API_KEY: ${PRESENTON_OPENAI_API_KEY:-}
       CUSTOM_MODEL: ${PRESENTON_OPENAI_MODEL:-}
       CAN_CHANGE_KEYS: "true"
+      PRESENTON_SEMANTIC_ICONS: ${PRESENTON_SEMANTIC_ICONS:-false}
       DISABLE_IMAGE_GENERATION: "true"
       NEXT_PUBLIC_BASE_PATH: /slide_pro/_presenton
-    volumes: [presenton-data:/app_data]
+    volumes:
+      - presenton-data:/app_data
+      - ./presenton/servers/fastapi/services/icon_finder_service.py:/app/servers/fastapi/services/icon_finder_service.py:ro
     networks: [edunote]
     depends_on:
       presenton-postgres: {condition: service_healthy}

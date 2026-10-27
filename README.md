@@ -42,7 +42,10 @@ For NVIDIA GPUs with the NVIDIA Container Toolkit, set `EMBEDDING_DEVICE=auto` i
 Tesla P100 hardware with driver 535. CPU is the portable default. The release does
 not install or change host GPU drivers.
 
-Presenton starts by default. Set its `PRESENTON_OPENAI_BASE_URL`,
+Presenton starts by default. It uses bundled icon metadata by default, with no
+icon-model download during startup. Keep the bundled `presenton/` source directory:
+Compose mounts its icon-service integration read-only. Set
+`PRESENTON_SEMANTIC_ICONS=true` to opt into model-based icon search on first use. Set its `PRESENTON_OPENAI_BASE_URL`,
 `PRESENTON_OPENAI_API_KEY`, and `PRESENTON_OPENAI_MODEL` in `.env` before starting
 slides, then recreate it after changes. Presenton's provider is configured
 separately from the core Settings page. The owner can also configure it in
@@ -96,7 +99,7 @@ Model weights and external services remain subject to their own availability and
 
 ## Validation and benchmarks
 
-The bundled runtime regression suite passed **153 tests** (4 external integration tests
+The bundled runtime regression suite passed **156 tests** (4 external integration tests
 excluded). The frontend production build and TypeScript checks passed with zero lint
 errors; lint warnings remain. Authentication, representative UI routes, the actual
 queue worker, code execution, PDF ingestion and source-backed retrieval were checked.
