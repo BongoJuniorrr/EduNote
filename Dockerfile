@@ -38,6 +38,8 @@ RUN echo "NEXT_PUBLIC_API_BASE=__NEXT_PUBLIC_API_BASE_PLACEHOLDER__" > .env.loca
 # Build Next.js for production with standalone output
 # This allows runtime environment variable injection
 RUN npm run build && rm -rf .next/cache .next/diagnostics .next/trace*
+RUN find /app -type d \( -name .claude -o -name .codex -o -name .cursor -o -name .gemini -o -name .agents -o -name .opencode -o -name .continue -o -name .windsurf \) -prune -exec rm -rf {} + && \
+    find /app -type f \( -name AGENTS.md -o -name CLAUDE.md -o -name GEMINI.md -o -name .mcp.json \) -delete
 
 # ============================================
 # Stage 2: Python Base with Dependencies

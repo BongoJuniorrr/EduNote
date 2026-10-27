@@ -49,6 +49,8 @@ ARG NEXT_PUBLIC_EDUNOTE_API_BASE=""
 ENV NEXT_PUBLIC_BASE_PATH=${NEXT_PUBLIC_BASE_PATH}
 ENV NEXT_PUBLIC_EDUNOTE_API_BASE=${NEXT_PUBLIC_EDUNOTE_API_BASE}
 RUN npm run build && rm -rf .next-build/cache .next-build/diagnostics .next-build/trace*
+RUN find /app -type d \( -name .claude -o -name .codex -o -name .cursor -o -name .gemini -o -name .agents -o -name .opencode -o -name .continue -o -name .windsurf \) -prune -exec rm -rf {} + && \
+    find /app -type f \( -name AGENTS.md -o -name CLAUDE.md -o -name GEMINI.md -o -name .mcp.json \) -delete
 
 WORKDIR /app
 
