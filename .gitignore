@@ -8,7 +8,7 @@ backups/
 cache/
 output/
 artifacts/
-models/
+/models/
 *.db
 *.sqlite*
 *.log
