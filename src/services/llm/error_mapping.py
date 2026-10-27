@@ -15,6 +15,7 @@ from .exceptions import (
     LLMAuthenticationError,
     LLMError,
     LLMRateLimitError,
+    LLMTimeoutError,
     ProviderContextWindowError,
 )
 
@@ -90,6 +91,8 @@ except ImportError:
 
 def map_error(exc: Exception, provider: Optional[str] = None) -> LLMError:
     """Map provider-specific errors to unified internal exceptions."""
+    if isinstance(exc, TimeoutError):
+        return LLMTimeoutError(str(exc) or "Model request timed out.", provider=provider)
     # Heuristic check for status codes before rules
     status_code = getattr(exc, "status_code", None)
     if status_code == 401:

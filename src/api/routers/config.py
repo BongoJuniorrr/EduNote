@@ -332,7 +332,7 @@ LLM_TEST_TIMEOUT_SECONDS = 300
 async def _probe_llm(**kwargs):
     try:
         response = await asyncio.wait_for(
-            llm_complete(max_retries=0, timeout=LLM_TEST_TIMEOUT_SECONDS, **kwargs),
+            llm_complete(max_retries=0, timeout=LLM_TEST_TIMEOUT_SECONDS, transport_stream=True, **kwargs),
             timeout=LLM_TEST_TIMEOUT_SECONDS,
         )
     except TimeoutError as error:
@@ -367,13 +367,14 @@ async def test_llm_connection(request: TestConnectionRequest, background: bool =
 
         response = await _probe_llm(
             model=request.model,
-            prompt="Hello, are you working?",
+            prompt="Reply with exactly Yes.",
             system_prompt="You are a helpful assistant. Reply with 'Yes'.",
             api_key=api_key,
             base_url=base_url,
             binding=request.provider,
             api_version=request.api_version,
             max_tokens=200,
+            temperature=0,
         )
         return {"success": True, "message": "Connection successful", "response": response[:100]}
     except Exception as e:
@@ -409,13 +410,14 @@ async def test_llm_config_by_id(config_id: str, background: bool = False):
 
         response = await _probe_llm(
             model=model,
-            prompt="Hello, are you working?",
+            prompt="Reply with exactly Yes.",
             system_prompt="You are a helpful assistant. Reply with 'Yes'.",
             api_key=api_key,
             base_url=base_url,
             binding=provider,
             api_version=config.get("api_version"),
             max_tokens=200,
+            temperature=0,
         )
         return {"success": True, "message": "Connection successful", "response": response[:100]}
     except Exception as e:

@@ -210,7 +210,8 @@ async def _openai_complete(
         try:
             # model and prompt must be positional arguments
             openai_complete_if_cache = _get_openai_complete_if_cache()
-            content = await openai_complete_if_cache(model, prompt, **lightrag_kwargs)
+            if not kwargs.get("messages"):
+                content = await openai_complete_if_cache(model, prompt, **lightrag_kwargs)
         finally:
             _lightrag_logger.setLevel(original_lightrag_level)
             _openai_logger.setLevel(original_openai_level)
@@ -227,7 +228,7 @@ async def _openai_complete(
 
         data = {
             "model": model,
-            "messages": [
+            "messages": kwargs.get("messages") or [
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": prompt},
             ],
@@ -322,7 +323,7 @@ async def _openai_stream(
     if "response_format" in kwargs:
         data["response_format"] = kwargs["response_format"]
 
-    timeout = aiohttp.ClientTimeout(total=300)
+    timeout = aiohttp.ClientTimeout(total=kwargs.get("timeout", 300))
     async with aiohttp.ClientSession(timeout=timeout) as session:
         async with session.post(url, headers=headers, json=data) as resp:
             if resp.status != 200:
@@ -473,7 +474,7 @@ async def _anthropic_stream(
         "stream": True,
     }
 
-    timeout = aiohttp.ClientTimeout(total=300)
+    timeout = aiohttp.ClientTimeout(total=kwargs.get("timeout", 300))
     async with aiohttp.ClientSession(timeout=timeout) as session:
         async with session.post(url, headers=headers, json=data) as response:
             if response.status != 200:

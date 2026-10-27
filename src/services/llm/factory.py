@@ -32,6 +32,7 @@ Retry Mechanism:
 """
 
 import asyncio
+import os
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
 try:
@@ -182,6 +183,10 @@ async def complete(
     Returns:
         str: The LLM response
     """
+    # Aggregate SSE internally when a proxy cannot hold a buffered response open.
+    transport_stream = kwargs.pop("transport_stream", None)
+    if transport_stream is None:
+        transport_stream = os.getenv("LLM_COMPLETION_TRANSPORT", "buffered").lower() == "stream"
     # Every provider receives the same slow-model transport budget unless overridden.
     kwargs.setdefault("timeout", 300)
     # Get config if parameters not provided
@@ -250,6 +255,17 @@ async def complete(
     )
     async def _do_complete(**call_kwargs):
         try:
+            if transport_stream:
+                stream_provider = local_provider if use_local else cloud_provider
+                parts = []
+                size = 0
+                async with asyncio.timeout(float(call_kwargs.get("timeout", 300))):
+                    async for part in stream_provider.stream(**call_kwargs):
+                        size += len(part)
+                        if size > 8 * 1024 * 1024:
+                            raise LLMAPIError("Model response exceeds 8 MiB", status_code=413)
+                        parts.append(part)
+                return "".join(parts)
             if use_local:
                 return await local_provider.complete(**call_kwargs)
             else:
