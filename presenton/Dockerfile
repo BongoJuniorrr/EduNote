@@ -48,7 +48,7 @@ ARG NEXT_PUBLIC_BASE_PATH=/slide_pro/_presenton
 ARG NEXT_PUBLIC_EDUNOTE_API_BASE=""
 ENV NEXT_PUBLIC_BASE_PATH=${NEXT_PUBLIC_BASE_PATH}
 ENV NEXT_PUBLIC_EDUNOTE_API_BASE=${NEXT_PUBLIC_EDUNOTE_API_BASE}
-RUN npm run build
+RUN npm run build && rm -rf .next/cache .next/diagnostics .next/trace*
 
 WORKDIR /app
 

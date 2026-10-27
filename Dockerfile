@@ -1,7 +1,7 @@
 # ============================================
 # EduNote Multi-Stage Dockerfile
 # ============================================
-# This Dockerfile builds a production-ready image for EduNote
+# This Dockerfile builds the single-owner beta image for EduNote
 # containing both the FastAPI backend and Next.js frontend
 #
 # Build: docker compose build
@@ -37,7 +37,7 @@ RUN echo "NEXT_PUBLIC_API_BASE=__NEXT_PUBLIC_API_BASE_PLACEHOLDER__" > .env.loca
 
 # Build Next.js for production with standalone output
 # This allows runtime environment variable injection
-RUN npm run build
+RUN npm run build && rm -rf .next/cache .next/diagnostics .next/trace*
 
 # ============================================
 # Stage 2: Python Base with Dependencies
@@ -95,7 +95,7 @@ FROM python:3.11-slim AS production
 # Labels
 LABEL maintainer="Tran Huu Vu Phuong" \
       description="EduNote: AI-Powered Personalized Learning Assistant" \
-      version="0.1.0"
+      version="0.1.0-beta.1"
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
