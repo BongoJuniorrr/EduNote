@@ -18,6 +18,7 @@ from typing import Any, Dict, Literal, Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
+from src.security.errors import public_error
 from src.services.config import (
     ConfigType,
     get_config_manager,
@@ -378,7 +379,7 @@ async def test_llm_connection(request: TestConnectionRequest, background: bool =
         )
         return {"success": True, "message": "Connection successful", "response": response[:100]}
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 @router.post("/llm/{config_id}/test")
@@ -421,7 +422,7 @@ async def test_llm_config_by_id(config_id: str, background: bool = False):
         )
         return {"success": True, "message": "Connection successful", "response": response[:100]}
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 # ==================== Embedding Configuration Endpoints ====================
@@ -528,7 +529,7 @@ async def test_embedding_connection(request: TestConnectionRequest):
             return {"success": True, "message": f"Connection successful (dim={len(embeddings[0])})"}
         return {"success": False, "message": "Failed to generate embeddings"}
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 @router.post("/embedding/{config_id}/test")
@@ -568,7 +569,7 @@ async def test_embedding_config_by_id(config_id: str):
             return {"success": True, "message": f"Connection successful (dim={len(embeddings[0])})"}
         return {"success": False, "message": "Failed to generate embeddings"}
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 # ==================== TTS Configuration Endpoints ====================
@@ -661,7 +662,7 @@ async def test_tts_connection(request: TestConnectionRequest):
                 raise ValueError("TTS endpoint returned empty audio")
         return {"success": True, "message": "TTS endpoint generated test audio"}
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 @router.post("/tts/{config_id}/test")
@@ -699,7 +700,7 @@ async def test_tts_config_by_id(config_id: str):
             voice=config.get("voice", "alloy"),
         ))
     except Exception as e:
-        return {"success": False, "message": f"Connection failed: {str(e)}"}
+        return {"success": False, "message": f"Connection failed: {public_error(e)}"}
 
 
 # ==================== Search Configuration Endpoints ====================

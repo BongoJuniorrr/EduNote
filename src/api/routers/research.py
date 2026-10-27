@@ -9,6 +9,7 @@ from typing import Any
 from fastapi import APIRouter, WebSocket
 from pydantic import BaseModel
 
+from src.security.errors import public_error
 from src.agents.research.agents import RephraseAgent
 from src.agents.research.research_pipeline import ResearchPipeline
 from src.api.utils.history import ActivityType, history_manager
@@ -59,7 +60,7 @@ async def optimize_topic(request: OptimizeRequest):
             api_key = llm_config.api_key
             base_url = llm_config.base_url
         except Exception as e:
-            return {"error": f"LLM config error: {e!s}"}
+            return {"error": f"LLM config error: {public_error(e)}"}
 
         # Init Agent
         agent = RephraseAgent(config=config, api_key=api_key, base_url=base_url)
@@ -77,7 +78,7 @@ async def optimize_topic(request: OptimizeRequest):
 
     except Exception as e:
         traceback.print_exc()
-        return {"error": str(e)}
+        return {"error": public_error(e)}
 
 
 @router.websocket("/run")
@@ -286,7 +287,7 @@ async def websocket_research_run(websocket: WebSocket):
             await safe_send(
                 {
                     "type": "error",
-                    "content": f"LLM configuration error: {e!s}",
+                    "content": f"LLM configuration error: {public_error(e)}",
                     "status": "failed",
                     "code": "llm_config_error",
                 }
@@ -444,7 +445,7 @@ async def websocket_research_run(websocket: WebSocket):
         except Exception as log_err:
             logger.warning(f"Failed to log timeout: {log_err}")
     except Exception as e:
-        await safe_send({"type": "error", "content": str(e), "status": "failed"})
+        await safe_send({"type": "error", "content": public_error(e), "status": "failed"})
         await safe_send({"type": "complete", "status": "error"})
         logging.error(f"Research error: {e}", exc_info=True)
 
@@ -455,7 +456,7 @@ async def websocket_research_run(websocket: WebSocket):
             )
             research_logger = get_logger("Research", log_dir=log_dir)
             research_logger.error(f"[{task_id}] Research flow failed: {e}")
-            task_manager.update_task_status(task_id, "error", error=str(e))
+            task_manager.update_task_status(task_id, "error", error=public_error(e))
         except Exception as log_err:
             logger.warning(f"Failed to log error: {log_err}")
     finally:

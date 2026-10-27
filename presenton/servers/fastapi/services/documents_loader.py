@@ -1,4 +1,5 @@
 import mimetypes
+from utils.safe_paths import workspace_file
 from fastapi import HTTPException
 import os, asyncio
 from typing import List, Optional, Tuple
@@ -17,7 +18,7 @@ from services.docling_service import DoclingService
 class DocumentsLoader:
 
     def __init__(self, file_paths: List[str]):
-        self._file_paths = file_paths
+        self._file_paths = [workspace_file(path) for path in file_paths]
 
         self.docling_service = DoclingService()
 
@@ -92,6 +93,7 @@ class DocumentsLoader:
         return document, image_paths
 
     async def load_text(self, file_path: str) -> str:
+        file_path = workspace_file(file_path)
         with open(file_path, "r") as file:
             return await asyncio.to_thread(file.read)
 

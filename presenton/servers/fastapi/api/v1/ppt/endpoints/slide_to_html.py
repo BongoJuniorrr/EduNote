@@ -1,4 +1,5 @@
 import asyncio
+from utils.safe_paths import workspace_file
 import os
 import base64
 import json
@@ -452,7 +453,7 @@ async def generate_html_from_slide(
 
 
 def _resolve_slide_image_to_base64(image_path: str) -> tuple[str, str]:
-    actual_image_path = resolve_local_asset_path(image_path)
+    actual_image_path = workspace_file(resolve_local_asset_path(image_path), allow_static=True)
 
     if not os.path.exists(actual_image_path):
         raise HTTPException(status_code=404, detail=f"Image file not found: {image_path}")
@@ -886,7 +887,7 @@ async def critic_template_slide(request: TemplateCriticRequest):
         if not request.html or not request.html.strip():
             raise HTTPException(status_code=400, detail="HTML content cannot be empty")
 
-        actual_image_path = resolve_local_asset_path(request.image)
+        actual_image_path = workspace_file(resolve_local_asset_path(request.image), allow_static=True)
         if not os.path.exists(actual_image_path):
             raise HTTPException(
                 status_code=404, detail=f"Image file not found: {request.image}"
@@ -952,7 +953,7 @@ async def convert_html_to_react(request: HtmlToReactRequest):
         media_type = None
         if request.image:
             image_path = request.image
-            actual_image_path = resolve_local_asset_path(image_path)
+            actual_image_path = workspace_file(resolve_local_asset_path(image_path), allow_static=True)
             if os.path.exists(actual_image_path):
                 with open(actual_image_path, "rb") as f:
                     image_b64 = base64.b64encode(f.read()).decode("utf-8")

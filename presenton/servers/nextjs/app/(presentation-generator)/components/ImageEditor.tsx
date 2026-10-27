@@ -1,4 +1,5 @@
 "use client";
+import { safeImageUrl } from "@/utils/safeImageUrl";
 import React, { useEffect, useState, useRef } from "react";
 import {
   Sheet,
@@ -368,7 +369,7 @@ const ImageEditor = ({
                       >
                         {previewImages && (
                           <img
-                            src={previewImages}
+                            src={safeImageUrl(previewImages)}
                             alt={`Preview`}
                             className="w-full h-full object-cover"
                           />
@@ -550,7 +551,7 @@ const ImageEditor = ({
                         onClick={() => {
                           setIsFocusPointMode(true);
                         }}
-                        src={previewImages}
+                        src={safeImageUrl(previewImages)}
                         style={{
                           objectFit: objectFit,
                           objectPosition: `${focusPoint.x}% ${focusPoint.y}%`,

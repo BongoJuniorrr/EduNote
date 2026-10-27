@@ -1,4 +1,5 @@
 "use client";
+import { safeImageUrl } from "@/utils/safeImageUrl";
 
 import React, { ReactNode, useRef, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -419,7 +420,7 @@ const EditableLayoutWrapper: React.FC<EditableLayoutWrapperProps> = ({
 
 
             // Update the DOM element immediately for visual feedback
-            (activeEditor.element as HTMLImageElement).src = newImageUrl;
+            (activeEditor.element as HTMLImageElement).src = safeImageUrl(newImageUrl);
 
             // Update Redux store
             dispatch(updateSlideImage({

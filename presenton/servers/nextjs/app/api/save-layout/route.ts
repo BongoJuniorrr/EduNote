@@ -6,6 +6,9 @@ import { existsSync } from "fs";
 export async function POST(request: NextRequest) {
   try {
     const { layout_name, components } = await request.json();
+    if (typeof layout_name !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(layout_name)) {
+      return NextResponse.json({error: "Invalid layout name"}, {status: 400});
+    }
 
     if (!layout_name || !components || !Array.isArray(components)) {
       return NextResponse.json(
@@ -38,6 +41,9 @@ export async function POST(request: NextRequest) {
         continue;
       }
 
+      if (typeof component_name !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(component_name)) {
+        return NextResponse.json({error: "Invalid component name"}, {status: 400});
+      }
       const fileName = `${component_name}.tsx`;
       const filePath = join(layoutsDir, fileName);
       const cleanComponentCode = component_code

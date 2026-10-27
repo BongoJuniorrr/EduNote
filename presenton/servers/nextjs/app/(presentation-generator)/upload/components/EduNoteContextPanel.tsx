@@ -200,7 +200,7 @@ function getRecordKey(record: NotebookRecord, index: number): string {
 }
 
 function isLikelyVietnamese(text: string): boolean {
-  return /[À-ỹà-ỹđĐ]/.test(text);
+  return /[\u00C0-\u024F\u1E00-\u1EFF]/.test(text);
 }
 
 function extractQuotedTopic(text: string): string {

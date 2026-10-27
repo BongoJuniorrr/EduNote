@@ -1,4 +1,5 @@
 import os
+from utils.safe_paths import workspace_file
 from typing import Annotated, List, Optional
 from fastapi import APIRouter, Body, File, HTTPException, UploadFile
 import logging
@@ -134,6 +135,7 @@ async def update_files(
     file_path: Annotated[str, Body()],
     file: Annotated[UploadFile, File()],
 ):
+    file_path = workspace_file(file_path)
     with open(file_path, "wb") as f:
         f.write(await file.read())
 

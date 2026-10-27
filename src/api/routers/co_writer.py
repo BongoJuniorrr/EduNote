@@ -14,6 +14,7 @@ if str(project_root) not in sys.path:
 
 import json
 
+from src.security.errors import public_error
 from src.agents.co_writer.edit_agent import (
     TOOL_CALLS_DIR,
     EditAgent,
@@ -122,7 +123,7 @@ async def edit_text(request: EditRequest):
 
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/automark", response_model=AutoMarkResponse)
@@ -140,7 +141,7 @@ async def auto_mark_text(request: AutoMarkRequest):
         return result
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/history")
@@ -150,7 +151,7 @@ async def get_history():
         history = load_history()
         return {"history": history, "total": len(history)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/history/{operation_id}")
@@ -165,7 +166,7 @@ async def get_operation(operation_id: str):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/tool_calls/{operation_id}")
@@ -180,7 +181,7 @@ async def get_tool_call(operation_id: str):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/export/markdown")
@@ -196,7 +197,7 @@ async def export_markdown(content: dict):
             headers={"Content-Disposition": f"attachment; filename={filename}"},
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 # ================= TTS Narration Feature =================
@@ -256,10 +257,10 @@ async def narrate_content(request: NarrateRequest):
         return result
     except ValueError as e:
         # TTS configuration related error
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=public_error(e))
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/narrate/script")
@@ -275,7 +276,7 @@ async def generate_script_only(request: ScriptOnlyRequest):
         return result
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/tts/status")
@@ -298,11 +299,11 @@ async def get_tts_status():
     except ValueError as e:
         return {
             "available": False,
-            "error": str(e),
+            "error": public_error(e),
             "hint": "Please configure TTS in .env file (TTS_BINDING=kokoro for local GPU)",
         }
     except Exception as e:
-        return {"available": False, "error": str(e)}
+        return {"available": False, "error": public_error(e)}
 
 
 @router.get("/tts/voices")

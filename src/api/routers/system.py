@@ -10,6 +10,7 @@ import time
 from fastapi import APIRouter
 from pydantic import BaseModel
 
+from src.security.errors import public_error
 from src.services.embedding import get_embedding_client, get_embedding_config
 from src.services.llm import complete as llm_complete
 from src.services.llm import get_llm_config, get_token_limit_kwargs
@@ -51,10 +52,10 @@ async def get_system_status():
         result["llm"]["status"] = "configured"
     except ValueError as e:
         result["llm"]["status"] = "not_configured"
-        result["llm"]["error"] = str(e)
+        result["llm"]["error"] = public_error(e)
     except Exception as e:
         result["llm"]["status"] = "error"
-        result["llm"]["error"] = str(e)
+        result["llm"]["error"] = public_error(e)
 
     # Check Embeddings configuration
     try:
@@ -63,10 +64,10 @@ async def get_system_status():
         result["embeddings"]["status"] = "configured"
     except ValueError as e:
         result["embeddings"]["status"] = "not_configured"
-        result["embeddings"]["error"] = str(e)
+        result["embeddings"]["error"] = public_error(e)
     except Exception as e:
         result["embeddings"]["status"] = "error"
-        result["embeddings"]["error"] = str(e)
+        result["embeddings"]["error"] = public_error(e)
 
     # Check TTS configuration
     try:
@@ -75,10 +76,10 @@ async def get_system_status():
         result["tts"]["status"] = "configured"
     except ValueError as e:
         result["tts"]["status"] = "not_configured"
-        result["tts"]["error"] = str(e)
+        result["tts"]["error"] = public_error(e)
     except Exception as e:
         result["tts"]["status"] = "error"
-        result["tts"]["error"] = str(e)
+        result["tts"]["error"] = public_error(e)
 
     return result
 
@@ -140,14 +141,14 @@ async def test_llm_connection():
         )
 
     except ValueError as e:
-        return TestResponse(success=False, message=f"LLM configuration error: {e!s}", error=str(e))
+        return TestResponse(success=False, message=f"LLM configuration error: {public_error(e)}", error=public_error(e))
     except Exception as e:
         response_time = (time.time() - start_time) * 1000
         return TestResponse(
             success=False,
-            message=f"LLM connection failed: {e!s}",
+            message=f"LLM connection failed: {public_error(e)}",
             response_time_ms=round(response_time, 2),
-            error=str(e),
+            error=public_error(e),
         )
 
 
@@ -190,15 +191,15 @@ async def test_embeddings_connection():
 
     except ValueError as e:
         return TestResponse(
-            success=False, message=f"Embeddings configuration error: {e!s}", error=str(e)
+            success=False, message=f"Embeddings configuration error: {public_error(e)}", error=public_error(e)
         )
     except Exception as e:
         response_time = (time.time() - start_time) * 1000
         return TestResponse(
             success=False,
-            message=f"Embeddings connection failed: {e!s}",
+            message=f"Embeddings connection failed: {public_error(e)}",
             response_time_ms=round(response_time, 2),
-            error=str(e),
+            error=public_error(e),
         )
 
 
@@ -264,12 +265,12 @@ async def test_tts_connection():
         )
 
     except ValueError as e:
-        return TestResponse(success=False, message=f"TTS configuration error: {e!s}", error=str(e))
+        return TestResponse(success=False, message=f"TTS configuration error: {public_error(e)}", error=public_error(e))
     except Exception as e:
         response_time = (time.time() - start_time) * 1000
         return TestResponse(
             success=False,
-            message=f"TTS connection check failed: {e!s}",
+            message=f"TTS connection check failed: {public_error(e)}",
             response_time_ms=round(response_time, 2),
-            error=str(e),
+            error=public_error(e),
         )

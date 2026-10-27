@@ -1,4 +1,5 @@
 import os
+from utils.safe_paths import workspace_file
 
 from utils.get_env import get_app_data_directory_env
 
@@ -55,14 +56,14 @@ def resolve_local_asset_path(path: str | None) -> str | None:
     if normalized.startswith("/app_data/images/"):
         app_data_dir = (get_app_data_directory_env() or "").rstrip("/\\")
         relative_path = normalized[len("/app_data/images/") :]
-        return os.path.join(app_data_dir, "images", relative_path)
+        return workspace_file(os.path.join(app_data_dir, "images", relative_path))
 
     if normalized.startswith("/static/"):
         relative_path = normalized[len("/static/") :]
-        return os.path.join("static", relative_path)
+        return workspace_file(os.path.join("static", relative_path), allow_static=True)
 
     if os.path.isabs(normalized):
-        return normalized
+        return workspace_file(normalized, allow_static=True)
 
     app_data_dir = (get_app_data_directory_env() or "").rstrip("/\\")
-    return os.path.join(app_data_dir, "images", normalized)
+    return workspace_file(os.path.join(app_data_dir, "images", normalized))

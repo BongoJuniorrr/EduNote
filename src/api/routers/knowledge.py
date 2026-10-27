@@ -26,6 +26,7 @@ from fastapi import (
 )
 from pydantic import BaseModel
 
+from src.security.errors import public_error
 from src.api.utils.progress_broadcaster import ProgressBroadcaster
 from src.api.utils.task_id_manager import TaskIDManager
 from src.knowledge.add_documents import DocumentAdder
@@ -184,7 +185,7 @@ async def run_initialization_task(initializer: KnowledgeBaseInitializer):
         logger.success(f"[{task_id}] KB '{initializer.kb_name}' initialized")
         task_manager.update_task_status(task_id, "completed")
     except Exception as e:
-        error_msg = str(e)
+        error_msg = public_error(e)
 
         logger.error(f"[{task_id}] KB '{initializer.kb_name}' init failed: {error_msg}")
 
@@ -317,7 +318,7 @@ async def health_check():
             "knowledge_bases_count": kb_count,
         }
     except Exception as e:
-        return {"status": "error", "error": str(e), "traceback": traceback.format_exc()}
+        return {"status": "error", "error": public_error(e), "diagnostic": "See local server logs"}
 
 
 @router.get("/rag-providers")
@@ -330,7 +331,7 @@ async def get_rag_providers():
         return {"providers": providers}
     except Exception as e:
         logger.error(f"Error getting RAG providers: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/configs")
@@ -343,7 +344,7 @@ async def get_all_kb_configs():
         return service.get_all_configs()
     except Exception as e:
         logger.error(f"Error getting KB configs: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/{kb_name}/config")
@@ -357,7 +358,7 @@ async def get_kb_config(kb_name: str):
         return {"kb_name": kb_name, "config": config}
     except Exception as e:
         logger.error(f"Error getting config for KB '{kb_name}': {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.put("/{kb_name}/config")
@@ -371,7 +372,7 @@ async def update_kb_config(kb_name: str, config: dict):
         return {"status": "success", "kb_name": kb_name, "config": service.get_kb_config(kb_name)}
     except Exception as e:
         logger.error(f"Error updating config for KB '{kb_name}': {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/configs/sync")
@@ -385,7 +386,7 @@ async def sync_configs_from_metadata():
         return {"status": "success", "message": "Configurations synced from metadata files"}
     except Exception as e:
         logger.error(f"Error syncing configs: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/default")
@@ -397,7 +398,7 @@ async def get_default_kb():
         return {"default_kb": default_kb}
     except Exception as e:
         logger.error(f"Error getting default KB: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.put("/default/{kb_name}")
@@ -416,7 +417,7 @@ async def set_default_kb(kb_name: str):
         raise
     except Exception as e:
         logger.error(f"Error setting default KB: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/list", response_model=list[KnowledgeBaseInfo])
@@ -486,7 +487,7 @@ async def list_knowledge_bases():
     except Exception as e:
         error_msg = f"Error listing knowledge bases: {e}"
         logger.error(f"{error_msg}\n{traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=f"Failed to list knowledge bases: {e!s}")
+        raise HTTPException(status_code=500, detail=f"Failed to list knowledge bases: {public_error(e)}")
 
 
 @router.post("/query", status_code=202)
@@ -522,7 +523,7 @@ async def get_knowledge_base_details(kb_name: str):
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.delete("/{kb_name}")
@@ -541,7 +542,7 @@ async def delete_knowledge_base(kb_name: str):
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/{kb_name}/upload")
@@ -686,7 +687,7 @@ async def create_knowledge_base(
     except Exception as e:
         logger.error(f"Failed to create KB: {e}")
         logger.debug(traceback.format_exc())
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/{kb_name}/progress")
@@ -701,7 +702,7 @@ async def get_progress(kb_name: str):
 
         return progress
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/{kb_name}/progress/clear")
@@ -712,7 +713,7 @@ async def clear_progress(kb_name: str):
         progress_tracker.clear()
         return {"status": "success", "message": f"Progress cleared for {kb_name}"}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.websocket("/{kb_name}/progress/ws")
@@ -787,7 +788,7 @@ async def websocket_progress(websocket: WebSocket, kb_name: str):
     except Exception as e:
         logger.debug(f"Progress WS error: {e}")
         try:
-            await websocket.send_json({"type": "error", "message": str(e)})
+            await websocket.send_json({"type": "error", "message": public_error(e)})
         except:
             pass
     finally:
@@ -817,12 +818,12 @@ async def link_folder(kb_name: str, request: LinkFolderRequest):
         logger.info(f"Linked folder '{request.folder_path}' to KB '{kb_name}'")
         return LinkedFolderInfo(**folder_info)
     except ValueError as e:
-        error_msg = str(e)
+        error_msg = public_error(e)
         if "not found" in error_msg.lower():
             raise HTTPException(status_code=404, detail=error_msg)
         raise HTTPException(status_code=400, detail=error_msg)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/{kb_name}/linked-folders", response_model=list[LinkedFolderInfo])
@@ -835,7 +836,7 @@ async def get_linked_folders(kb_name: str):
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.delete("/{kb_name}/linked-folders/{folder_id}")
@@ -851,7 +852,7 @@ async def unlink_folder(kb_name: str, folder_id: str):
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.post("/{kb_name}/sync-folder/{folder_id}")
@@ -887,7 +888,7 @@ async def sync_folder(kb_name: str, folder_id: str, background_tasks: Background
             api_key = llm_config.api_key
             base_url = llm_config.base_url
         except ValueError as e:
-            raise HTTPException(status_code=500, detail=f"LLM config error: {e!s}")
+            raise HTTPException(status_code=500, detail=f"LLM config error: {public_error(e)}")
 
         logger.info(
             f"Syncing {len(files_to_process)} files from folder '{folder_path}' to KB '{kb_name}'"
@@ -920,7 +921,7 @@ async def sync_folder(kb_name: str, folder_id: str, background_tasks: Background
     except ValueError:
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 # =============================================================================
@@ -1116,7 +1117,7 @@ async def get_knowledge_graph(
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
         logger.error(f"Error getting knowledge graph: {e}\n{traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 def entity_type_filter_match(actual_type: str, filter_type: str) -> bool:
@@ -1460,7 +1461,7 @@ async def get_knowledge_base_chunks(
         raise HTTPException(status_code=404, detail=f"Knowledge base '{kb_name}' not found")
     except Exception as e:
         logger.error(f"Error getting chunks: {e}\n{traceback.format_exc()}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
 
 
 @router.get("/{kb_name}/chunks/{chunk_id}")
@@ -1524,4 +1525,4 @@ async def get_chunk_detail(kb_name: str, chunk_id: str):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=public_error(e))
