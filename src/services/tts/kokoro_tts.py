@@ -220,7 +220,8 @@ class KokoroTTS:
         if output_path is None:
             import tempfile
 
-            output_path = tempfile.mktemp(suffix=f".{output_format}")
+            with tempfile.NamedTemporaryFile(suffix=f".{output_format}", delete=False) as allocated:
+                output_path = allocated.name
 
         output_path = str(output_path)
 
@@ -284,7 +285,8 @@ class KokoroTTS:
 
             import soundfile as sf
 
-            wav_path = tempfile.mktemp(suffix=".wav")
+            with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as allocated:
+                wav_path = allocated.name
             try:
                 sf.write(wav_path, audio_data, self.SAMPLE_RATE)
                 subprocess.run(

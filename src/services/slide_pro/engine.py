@@ -3207,7 +3207,11 @@ class SlideGenerateAgent:
         if not svg_match:
             return None
         svg = svg_match.group(0)
-        svg = re.sub(r"<script[\s\S]*?</script>", "", svg, flags=re.IGNORECASE)
+        from src.security.svg import sanitize_svg
+        try:
+            svg = sanitize_svg(svg)
+        except Exception:
+            return None
         if "xmlns=" not in svg.split(">", 1)[0]:
             svg = svg.replace("<svg", "<svg xmlns='http://www.w3.org/2000/svg'", 1)
         encoded = base64.b64encode(svg.encode("utf-8")).decode("ascii")

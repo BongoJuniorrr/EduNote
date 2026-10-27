@@ -12,6 +12,8 @@ import subprocess
 import sys
 
 
+from src.security.paths import contained_path, safe_child, safe_leaf
+
 def check_mineru_installed():
     """Check if MinerU is installed"""
     try:
@@ -69,7 +71,8 @@ def parse_pdf_with_mineru(pdf_path: str, output_base_dir: str = None):
 
     print(f"✓ Detected MinerU command: {mineru_cmd}")
 
-    pdf_path = Path(pdf_path).resolve()
+    project_root = Path(__file__).resolve().parents[3]
+    pdf_path = contained_path(project_root / "data", pdf_path)
     if not pdf_path.exists():
         print(f"✗ Error: PDF file does not exist: {pdf_path}")
         return False
@@ -83,12 +86,12 @@ def parse_pdf_with_mineru(pdf_path: str, output_base_dir: str = None):
     if output_base_dir is None:
         output_base_dir = project_root / "reference_papers"
     else:
-        output_base_dir = Path(output_base_dir)
+        output_base_dir = contained_path(project_root / "data" / "user" / "question", output_base_dir)
 
     output_base_dir.mkdir(parents=True, exist_ok=True)
 
-    pdf_name = pdf_path.stem
-    output_dir = output_base_dir / pdf_name
+    pdf_name = safe_leaf(pdf_path.stem)
+    output_dir = safe_child(output_base_dir, pdf_name)
 
     if output_dir.exists():
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

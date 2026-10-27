@@ -19,7 +19,10 @@ from src.services.rag.components.routing import FileTypeRouter
 
 
 # Cross-platform file locking
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 @contextmanager
+
 def file_lock_shared(file_handle):
     """Acquire a shared (read) lock on a file - cross-platform."""
     if sys.platform == "win32":
@@ -66,7 +69,7 @@ def file_lock_exclusive(file_handle):
 def validate_kb_name(name: str) -> str:
     if not name or not name.strip() or name in {".", ".."} or any(char in name for char in ("/", "\\", "\x00")) or len(name) > 255:
         raise ValueError("Knowledge base name must be a single directory name")
-    return name
+    return safe_leaf(name)
 
 
 class KnowledgeBaseManager:
@@ -204,7 +207,7 @@ class KnowledgeBaseManager:
     def register_knowledge_base(self, name: str, description: str = "", set_default: bool = False):
         """Register a knowledge base"""
         validate_kb_name(name)
-        kb_dir = self.base_dir / name
+        kb_dir = safe_child(self.base_dir, name)
         if not kb_dir.resolve().is_relative_to(self.base_dir.resolve()):
             raise ValueError("Knowledge base path escapes storage")
         if not kb_dir.exists():
@@ -229,7 +232,7 @@ class KnowledgeBaseManager:
                 raise ValueError("No default knowledge base set")
 
         validate_kb_name(name)
-        kb_dir = self.base_dir / name
+        kb_dir = safe_child(self.base_dir, name)
         if not kb_dir.resolve().is_relative_to(self.base_dir.resolve()):
             raise ValueError("Knowledge base path escapes storage")
         if not kb_dir.exists():
@@ -328,7 +331,7 @@ class KnowledgeBaseManager:
             raise ValueError("No knowledge base name provided and no default set")
 
         # Get knowledge base path
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
 
         # Get status and progress from kb_config.json
         kb_config = self.config.get("knowledge_bases", {}).get(kb_name, {})
@@ -572,7 +575,7 @@ class KnowledgeBaseManager:
             raise ValueError(f"Path is not a directory: {folder}")
 
         # Get RAG provider from KB metadata to determine supported extensions
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
         provider = "raganything"  # default to most comprehensive
         if metadata_file.exists():
@@ -596,7 +599,7 @@ class KnowledgeBaseManager:
         ).hexdigest()[:8]
 
         # Load existing linked folders from metadata
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
         metadata: dict = {}
 
@@ -647,7 +650,7 @@ class KnowledgeBaseManager:
         if kb_name not in self.list_knowledge_bases():
             raise ValueError(f"Knowledge base not found: {kb_name}")
 
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
 
         if not metadata_file.exists():
@@ -674,7 +677,7 @@ class KnowledgeBaseManager:
         if kb_name not in self.list_knowledge_bases():
             raise ValueError(f"Knowledge base not found: {kb_name}")
 
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
 
         if not metadata_file.exists():
@@ -761,7 +764,7 @@ class KnowledgeBaseManager:
                 pass
 
         # Get RAG provider from KB metadata to determine supported extensions
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
         provider = "raganything"  # default to most comprehensive
         if metadata_file.exists():
@@ -818,7 +821,7 @@ class KnowledgeBaseManager:
         if kb_name not in self.list_knowledge_bases():
             raise ValueError(f"Knowledge base not found: {kb_name}")
 
-        kb_dir = self.base_dir / kb_name
+        kb_dir = safe_child(self.base_dir, kb_name)
         metadata_file = kb_dir / "metadata.json"
 
         if not metadata_file.exists():

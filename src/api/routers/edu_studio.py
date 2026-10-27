@@ -11,7 +11,7 @@ import os
 from pathlib import Path as FsPath
 import re
 from typing import Any, Literal
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Path, UploadFile
 from pydantic import BaseModel, Field
@@ -94,6 +94,9 @@ _QUERY_STOPWORDS = {
     "đó",
 }
 
+
+
+from src.security.paths import safe_child, safe_leaf, contained_path
 
 class MaterialPayload(BaseModel):
     title: str
@@ -269,7 +272,7 @@ def _score_text_match(text: str, terms: list[str]) -> int:
 
 
 def _local_kb_context_search(kb_name: str, query: str, max_blocks: int = 2) -> str:
-    kb_dir = _KB_BASE_DIR / kb_name
+    kb_dir = safe_child(_KB_BASE_DIR, kb_name)
     content_list_dir = kb_dir / "content_list"
     if not content_list_dir.exists():
         return ""
@@ -343,7 +346,7 @@ def _local_kb_context_search(kb_name: str, query: str, max_blocks: int = 2) -> s
 
 
 def _get_kb_runtime_status(kb_name: str) -> dict[str, Any]:
-    graph_path = _KB_BASE_DIR / kb_name / "rag_storage" / "graph_chunk_entity_relation.graphml"
+    graph_path = safe_child(_KB_BASE_DIR, kb_name) / "rag_storage" / "graph_chunk_entity_relation.graphml"
     rag_graph_valid: bool | None = None
     rag_graph_error = ""
     if graph_path.exists():

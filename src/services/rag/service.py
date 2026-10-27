@@ -49,6 +49,9 @@ PROFILE_DEFAULTS: Dict[str, Dict[str, Any]] = {
 }
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 class RAGService:
     """
     Unified RAG service entry point.
@@ -273,7 +276,7 @@ class RAGService:
             Provider name (e.g., 'llamaindex', 'lightrag', 'raganything')
         """
         try:
-            metadata_file = Path(self.kb_base_dir) / kb_name / "metadata.json"
+            metadata_file = safe_child(self.kb_base_dir, kb_name) / "metadata.json"
 
             if metadata_file.exists():
                 with open(metadata_file, encoding="utf-8") as f:
@@ -314,7 +317,7 @@ class RAGService:
             return await pipeline.delete(kb_name=kb_name)
 
         # Fallback: delete directory manually
-        kb_dir = Path(self.kb_base_dir) / kb_name
+        kb_dir = safe_child(self.kb_base_dir, kb_name)
         if kb_dir.exists():
             shutil.rmtree(kb_dir)
             self.logger.info(f"Deleted KB directory: {kb_dir}")

@@ -56,6 +56,9 @@ BYTES_PER_GB = 1024**3
 BYTES_PER_MB = 1024**2
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 def format_bytes_human_readable(size_bytes: int) -> str:
     """Format bytes into human-readable string (GB, MB, or bytes)."""
     if size_bytes >= BYTES_PER_GB:
@@ -726,7 +729,7 @@ async def websocket_progress(websocket: WebSocket, kb_name: str):
         initial_progress = progress_tracker.get_progress()
 
         # Check if KB is already ready (has rag_storage)
-        kb_dir = get_kb_base_dir() / kb_name
+        kb_dir = safe_child(get_kb_base_dir(), kb_name)
         rag_storage_dir = kb_dir / "rag_storage"
         kb_is_ready = rag_storage_dir.exists() and rag_storage_dir.is_dir()
 

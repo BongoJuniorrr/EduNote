@@ -22,6 +22,9 @@ ALLOWED_ARTIFACT_MIME_TYPES = {
 }
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 class EduStudioArtifactStore:
     """Persist run metadata and artifacts under data/user/edu-studio."""
 
@@ -44,7 +47,7 @@ class EduStudioArtifactStore:
         return f"edu_{now}_{suffix}"
 
     def _run_dir(self, run_id: str) -> Path:
-        return self.base_dir / run_id
+        return safe_child(self.base_dir, run_id)
 
     def _meta_path(self, run_id: str) -> Path:
         return self._run_dir(run_id) / "run.json"

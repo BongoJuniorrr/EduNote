@@ -20,6 +20,9 @@ from src.logging import get_logger
 _logger = get_logger("KnowledgeInit")
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 def _get_logger():
     return _logger
 
@@ -41,7 +44,7 @@ class ProgressTracker:
     def __init__(self, kb_name: str, base_dir: Path):
         self.kb_name = kb_name
         self.base_dir = base_dir
-        self.kb_dir = base_dir / kb_name
+        self.kb_dir = safe_child(base_dir, kb_name)
         self.progress_file = self.kb_dir / ".progress.json"
         self._callbacks: list = []  # Support multiple callbacks
         self.task_id: str | None = None  # Task ID (for log identification)

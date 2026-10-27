@@ -25,6 +25,9 @@ ALLOWED_ARTIFACT_EXTENSIONS = {
 }
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 class SlideProArtifactStore:
     """Persist run metadata and artifacts under data/user/slide-pro."""
 
@@ -54,7 +57,7 @@ class SlideProArtifactStore:
         return f"/api/outputs/slide-pro/{run_id}/artifacts"
 
     def _run_dir(self, run_id: str) -> Path:
-        return self.base_dir / run_id
+        return safe_child(self.base_dir, run_id)
 
     def _meta_path(self, run_id: str) -> Path:
         return self._run_dir(run_id) / "run.json"

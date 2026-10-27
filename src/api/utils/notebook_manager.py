@@ -12,6 +12,9 @@ import uuid
 from pydantic import BaseModel, Field
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 class RecordType(str, Enum):
     """Record type"""
 
@@ -97,7 +100,7 @@ class NotebookManager:
 
     def _get_notebook_file(self, notebook_id: str) -> Path:
         """Get notebook file path"""
-        return self.base_dir / f"{notebook_id}.json"
+        return safe_child(self.base_dir, f"{safe_leaf(notebook_id)}.json")
 
     def _load_notebook(self, notebook_id: str) -> dict | None:
         """Load single notebook"""

@@ -966,7 +966,7 @@ def main():
     logger.info(f"Auto merge: {'Yes' if not args.no_merge else 'No'}")
     logger.info(f"Debug mode: {'Yes' if args.debug else 'No'}")
     logger.info(
-        f"API key: {'Set (' + api_key[:8] + '...' + api_key[-4:] + ')' if api_key else 'Not set'}"
+        f"API key: {'Configured' if api_key else 'Not set'}"
     )
     logger.info(f"API base URL: {base_url if base_url else 'Default (https://api.openai.com/v1)'}")
     logger.info("=" * 60)

@@ -20,7 +20,10 @@ from src.services.config import load_config_with_main, parse_language
 from .agents import ChatAgent, InteractiveAgent, LocateAgent, SummaryAgent
 
 
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 @dataclass
+
 class GuidedSession:
     """Guided learning session"""
 
@@ -149,7 +152,7 @@ class GuideManager:
 
     def _get_session_file(self, session_id: str) -> Path:
         """Get session file path"""
-        return self.output_dir / f"session_{session_id}.json"
+        return safe_child(self.output_dir, f"session_{safe_leaf(session_id)}.json")
 
     def _save_session(self, session: GuidedSession):
         """Save session to file"""

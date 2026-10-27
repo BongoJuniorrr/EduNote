@@ -99,3 +99,6 @@ python-docx>=1.1.0   # For DOCX parsing (fallback parser)
 # Keep the Transformers release compatible with torch 2.4 / Tesla P100.
 transformers==4.57.6
 gradio==6.8.0
+
+# Entity expansion is disabled for uploaded GraphML/SVG.
+defusedxml>=0.7.1

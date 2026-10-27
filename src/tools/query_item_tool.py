@@ -13,6 +13,9 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 
+
+from src.security.paths import safe_child, safe_leaf, contained_path
+
 def query_numbered_item(
     identifier: str,
     kb_name: str | None = None,
@@ -94,7 +97,7 @@ def query_numbered_item(
             }
 
     # Load items
-    kb_dir = base_dir / kb_name
+    kb_dir = safe_child(base_dir, kb_name)
     if not kb_dir.exists():
         return {
             "identifier": identifier,

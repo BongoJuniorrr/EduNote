@@ -8,6 +8,7 @@ import traceback
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 
+from src.security.paths import safe_child, safe_leaf, contained_path
 from src.agents.question import AgentCoordinator
 from src.api.utils.history import ActivityType, history_manager
 from src.api.utils.log_interceptor import LogInterceptor
@@ -179,7 +180,7 @@ async def websocket_mimic_generate(websocket: WebSocket):
                 # Create batch directory for this mimic session
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 pdf_stem = Path(safe_name).stem
-                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{pdf_stem}"
+                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{safe_leaf(pdf_stem)}"
                 batch_dir.mkdir(parents=True, exist_ok=True)
 
                 # Save uploaded PDF in batch directory
@@ -222,11 +223,11 @@ async def websocket_mimic_generate(websocket: WebSocket):
                         {"type": "error", "content": "paper_path is required for parsed mode"}
                     )
                     return
-                paper_dir = paper_path
+                paper_dir = str(contained_path(MIMIC_OUTPUT_DIR, paper_path))
 
                 # Create batch directory for parsed mode too
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{Path(paper_path).name}"
+                batch_dir = MIMIC_OUTPUT_DIR / f"mimic_{timestamp}_{safe_leaf(Path(paper_path).name)}"
                 batch_dir.mkdir(parents=True, exist_ok=True)
                 output_dir = str(batch_dir)
 
