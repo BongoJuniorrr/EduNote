@@ -1,0 +1,19 @@
+{
+  "release": "0.1.0-beta.1",
+  "checked_on": "2026-10-28",
+  "status": "final package checks in progress; not a production security certification",
+  "functional_baseline": {
+    "python_runtime_passed": 132,
+    "python_deselected_external_integration": 4,
+    "python_warnings": 6,
+    "host_python_passed": 134,
+    "host_skipped": 2,
+    "frontend_build": true,
+    "frontend_lint_errors": 0,
+    "npm_production_advisories": 0,
+    "package_route_smoke_passed": true,
+    "actual_queue_worker_process_verified": true,
+    "real_rag_incremental_source_retrieval": true
+  },
+  "production_dependency_gate_passed": false
+}

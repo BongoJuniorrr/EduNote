@@ -1,0 +1,116 @@
+# =============================================================================
+# Unified Agent Parameters Configuration
+# =============================================================================
+# This file serves as the SINGLE source of truth for temperature and max_tokens
+# settings across all agent modules. DO NOT hardcode these values elsewhere.
+#
+# Each module shares ONE set of parameters for all its agents.
+# =============================================================================
+
+# Solve Module - Problem solving agents
+# Agents: investigate_agent, note_agent, manager_agent, solve_agent, tool_agent, response_agent, precision_answer_agent
+solve:
+  temperature: 0.3
+  max_tokens: 8192
+  # NOTE: Valid tools for investigate agent validation are defined in
+  #       config/main.yaml, which is the SINGLE source of truth for valid_tools.
+  #       Do not re-declare valid_tools here to avoid configuration drift.
+
+# Research Module - Deep research agents
+# Agents: rephrase_agent, decompose_agent, manager_agent, research_agent, note_agent, reporting_agent
+research:
+  temperature: 0.5
+  max_tokens: 12000
+
+# Question Module - Question generation agents
+# Agents: question_generation_agent, question_validation_agent
+question:
+  temperature: 0.7
+  max_tokens: 4096
+
+# Guide Module - Learning guidance agents
+# Agents: locate_agent, interactive_agent, chat_agent, summary_agent
+guide:
+  temperature: 0.5
+  max_tokens: 16192
+
+# IdeaGen Module - Idea generation agents
+# Agents: material_organizer_agent, idea_generation workflow
+ideagen:
+  temperature: 0.7
+  max_tokens: 4096
+
+# Edu Studio Module - Education-focused generation workflows
+# Workflows: slide_deck, exam_blueprint, lesson_plan and agentic utility tools
+edu_studio:
+  temperature: 0.4
+  max_tokens: 8192
+
+# CoWriter Module - Collaborative writing agents
+# Agents: edit_agent
+co_writer:
+  temperature: 0.7
+  max_tokens: 4096
+
+# Mission Module - Agentic orchestration with plan/review loops
+# Agents: clarifier_agent, planner_agent, finalizer_agent, reviewer_agent
+mission:
+  temperature: 0.4
+  max_tokens: 8192
+
+# =============================================================================
+# VGU Course Module v2 - Optimized for 95+ RAG quality score
+# =============================================================================
+# This module is designed for VGU course materials with:
+# - Two-tier indexing (coarse sections → fine chunks)
+# - Page-accurate citations
+# - Cross-encoder reranking with GPU acceleration (P100 16GB)
+# - Multimodal support (images, tables, equations)
+# - Query expansion for better recall
+# - Hybrid BM25 + Dense search
+vgu_course:
+  temperature: 0.3
+  max_tokens: 16384
+  # Retrieval settings (optimized for long documents)
+  retrieval:
+    coarse_top_k: 15      # Number of sections in coarse retrieval (embedding-based)
+    fine_top_k: 50        # Number of chunks in fine retrieval (increased for better recall)
+    final_top_k: 12       # Final results after reranking
+  # Reranker settings (GPU accelerated)
+  reranker:
+    enabled: true
+    model: "BAAI/bge-reranker-v2-m3"  # Multilingual reranker (XLM-RoBERTa)
+    device: "cuda"                       # GPU acceleration (P100)
+    max_length: 1024                     # Longer context on GPU
+  # Chunking settings (semantic-based)
+  chunking:
+    chunk_size: 512       # Slightly larger for more context
+    chunk_overlap: 75     # More overlap for better continuity
+  # Citation settings
+  citations:
+    enabled: true
+    include_page_numbers: true
+    include_section_path: true
+  # Advanced features (v2)
+  advanced:
+    query_expansion: true          # LLM-based query expansion
+    hybrid_search: true            # BM25 + Dense retrieval
+    embedding_cache: true          # Cache embeddings for speed
+    bm25_weight: 0.3               # Weight for sparse retrieval
+    dense_weight: 0.7              # Weight for dense retrieval
+  # Parser settings (3-tier: LlamaParse → MinerU → PyMuPDF)
+  parser:
+    primary: "llamaparse"          # Primary parser (llamaparse, mineru, pymupdf)
+    llamaparse_mode: "Agentic"     # Mode: Fast, Cost Effective, Agentic, Agentic Plus
+    extract_images: true           # Extract images from documents
+    vision_descriptions: true      # Generate descriptions for images using vision model
+
+# =============================================================================
+# Narrator Agent - Independent configuration for TTS integration
+# =============================================================================
+# This agent has special requirements for TTS (Text-to-Speech) integration:
+# - max_tokens is limited to 4000 due to OpenAI TTS API character limits
+# - Separate configuration allows fine-tuning without affecting other agents
+narrator:
+  temperature: 0.7
+  max_tokens: 4000

@@ -1,0 +1,65 @@
+# ============================================
+# .dockerignore — EduNote Production Build
+# ============================================
+
+# Node modules (installed during build)
+web/node_modules
+web/.next
+web/playwright-report
+web/test-results
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+.eggs
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Data directories (mounted as volumes)
+data/
+
+# Git
+.git
+.gitignore
+
+# Dev / CI files
+.env
+.env.*
+!.env.t5.example
+
+# Build artifacts
+build.log
+build-t5.log
+*.log
+
+# Tests output
+tests/
+conftest.py
+
+# IDE
+.vscode
+.idea
+
+# Docs (not needed in runtime image)
+docs/
+presenton/
+
+# Monitoring configs (not part of app image)
+monitoring/
+
+# Large model files
+*.safetensors
+*.bin
+*.pt
+*.ckpt
+
+# Private single-owner gateway credentials
+.edunote-access/

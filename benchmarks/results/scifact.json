@@ -1,0 +1,25 @@
+{
+  "benchmark": "BEIR/SciFact",
+  "split": "test",
+  "queries": 300,
+  "corpus": 5183,
+  "model": "intfloat/multilingual-e5-large-instruct",
+  "dimensions": 1024,
+  "metrics": {
+    "recall@1": 0.5842777777777778,
+    "recall@5": 0.7517777777777778,
+    "recall@10": 0.8178333333333333,
+    "mrr@10": 0.6812103174603177,
+    "ndcg@10": 0.7095582636985918
+  },
+  "elapsed_seconds": 294.1783029390499,
+  "input_sha256": {
+    "corpus.jsonl": "dec31c8182f3d744c7d2c09423756fd1d17cbef75808db13ba01cc0aab4d1ac6",
+    "queries.jsonl": "8ff84a7c903f722981cd8d595c022660140c51867b27608a6d4910db86080313",
+    "qrels/test.tsv": "0864bb985e0ca2367ba217977e72004d549054b2b06666ed9d4825ac7c21284c"
+  },
+  "scope": "Dense retrieval through the production embedding client; not an end-to-end generation/citation score.",
+  "configured_max_tokens": 8192,
+  "effective_model_max_seq_length": 512,
+  "note": "The E5 model uses a 512-token limit. The previous 8192 value was client configuration, not effective model context."
+}

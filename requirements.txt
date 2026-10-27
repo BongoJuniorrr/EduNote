@@ -1,0 +1,101 @@
+# ============================================
+# EduNote Python Dependencies
+# ============================================
+# Python >= 3.10 required
+# Install: pip install -r requirements.txt
+
+# ============================================
+# Core dependencies
+# ============================================
+python-dotenv>=1.0.0
+cryptography>=42.0.0          # Encrypted per-user provider vault
+PyYAML>=6.0
+tiktoken>=0.5.0
+jinja2>=3.1.0              # Template engine for search consolidation
+
+# ============================================
+# HTTP and API clients
+# ============================================
+requests>=2.32.2
+openai>=1.30.0
+anthropic>=0.30.0          # Anthropic Claude API
+perplexityai>=0.1.0
+dashscope>=1.14.0
+aiohttp>=3.9.4
+httpx>=0.27.0
+urllib3>=2.2.1
+
+# ============================================
+# Async support
+# ============================================
+nest_asyncio>=1.5.8
+tenacity>=8.0.0
+
+# ============================================
+# Web framework and server
+# ============================================
+fastapi>=0.100.0
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+python-multipart>=0.0.6
+pydantic>=2.12.5,<3
+pytesseract>=0.3.13          # Basic OCR adapter for queued extraction
+Pillow>=10.0.0               # Image loading for Tesseract OCR
+
+# ============================================
+# RAG and knowledge base
+# ============================================
+raganything>=0.1.0
+docling>=2.31.0                # Document parser for Office/HTML (alternative to MinerU)
+
+# ============================================
+# VGU Course - Reranker and enhanced retrieval
+# ============================================
+sentence-transformers==5.7.0   # Cross-encoder reranker for VGU Course mode
+rank-bm25>=0.2.2               # BM25 sparse retrieval for hybrid search
+
+# ============================================
+# Local TTS - Kokoro-82M (text-to-speech on GPU)
+# ============================================
+kokoro>=0.9.4                  # Kokoro-82M TTS model (#1 TTS Arena, Apache 2.0)
+pydub>=0.25.1                  # Audio format conversion (WAV → MP3)
+soundfile>=0.12.0              # Audio I/O for Kokoro output
+nvidia-ml-py>=12.0.0           # NVML GPU memory admission control
+# NOTE: torch is installed separately in Dockerfile with CUDA 12.1 for P100 (sm_60) support
+# For local install: pip install torch==2.4.1+cu121 --index-url https://download.pytorch.org/whl/cu121
+# torch>=2.0.0                 # Installed separately for GPU compatibility
+
+# ============================================
+# LlamaIndex
+# ============================================
+llama-index>=0.14.12
+
+# ============================================
+# Academic and research tools
+# ============================================
+arxiv>=2.0.0
+
+# ============================================
+# Scientific computing (for RAG and code execution)
+# ============================================
+numpy>=1.24.0,<2.0.0  # NumPy 1.24+ required for array API, <2.0 for compatibility
+# matplotlib>=3.7.0  # Uncomment if needed for plotting
+# scipy>=1.11.0      # Uncomment if needed for scientific computing
+# pandas>=2.0.0      # Uncomment if needed for data analysis
+
+# PDF parsing
+PyMuPDF>=1.26.0      # For PDF text extraction (fast and reliable)
+python-docx>=1.1.0   # For DOCX parsing (fallback parser)
+
+# Vector search (optional but recommended for llamaindex pipeline)
+# faiss-cpu>=1.7.4   # Uncomment for CPU-only FAISS support (faster search)
+# faiss-gpu>=1.7.4   # Uncomment if you have GPU and want GPU acceleration
+
+# ============================================
+# Development and testing tools
+# ============================================
+# Development tools live in requirements-dev.txt.
+
+# Keep the Transformers release compatible with torch 2.4 / Tesla P100.
+transformers==4.57.6
+gradio==6.8.0

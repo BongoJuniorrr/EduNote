@@ -1,0 +1,42 @@
+{
+  "checked_on": "2026-10-28",
+  "runtime": "Legacy GPU beta / Python 3.11 / Torch 2.4.1+cu121",
+  "known_advisory_entries": 56,
+  "packages": [
+    {
+      "package": "lightrag-hku",
+      "version": "1.4.16",
+      "entries": 9,
+      "fix_versions": [
+        "1.5.4",
+        "1.5.5"
+      ]
+    },
+    {
+      "package": "pillow",
+      "version": "12.3.0",
+      "entries": 38,
+      "fix_versions": [
+        "13.0.0"
+      ]
+    },
+    {
+      "package": "transformers",
+      "version": "4.57.6",
+      "entries": 9,
+      "fix_versions": [
+        "5.0.0",
+        "5.0.0rc3",
+        "5.10.0",
+        "5.3.0",
+        "5.5.0"
+      ]
+    }
+  ],
+  "production_security_gate_passed": false,
+  "limitations": [
+    "Dependency advisory entries are not necessarily unique CVEs.",
+    "OS packages and the optional Presenton image have not received a complete security certification.",
+    "Use only with trusted documents and behind owner authentication."
+  ]
+}

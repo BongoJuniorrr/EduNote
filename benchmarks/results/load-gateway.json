@@ -1,0 +1,2018 @@
+{
+  "scope": "Finite read-only mixed UI/API workload against restored QA release; does not establish GPU/LLM concurrent-generation capacity.",
+  "requests": 400,
+  "concurrency": 8,
+  "elapsed_seconds": 11.460152662009932,
+  "requests_per_second": 34.9035490012265,
+  "status_counts": {
+    "200": 400
+  },
+  "latency_seconds": {
+    "p50": 0.1102007309673354,
+    "p95": 0.6015600480604917,
+    "p99": 1.6108002699911594
+  },
+  "passes": true,
+  "samples": [
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 1.5275414970237762
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 1.607712164055556
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 1.5756677200552076
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 1.6108002699911594
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 1.6248711079824716
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.09971547999884933
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.06580067903269082
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.05465978698339313
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 1.9261258488986641
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 1.9347863369621336
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.3295642990851775
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 1.9410251829540357
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.31977334793191403
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.3193121299846098
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.32477440999355167
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.3242256320081651
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.030937858973629773
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.038513564970344305
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.044832182000391185
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.0356698629911989
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.025903693051077425
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02649739198386669
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.13991562800947577
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.7143518070224673
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.7183805160457268
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.732136812992394
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.6858648869674653
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.6747518549673259
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.7295778979314491
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.6761026149615645
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.5985787760000676
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.024519421043805778
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.02896598493680358
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02973584597930312
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.0305299210594967
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.030693384003825486
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.023776566958986223
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02586480602622032
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.024773398996330798
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.1102007309673354
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.12255662295501679
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.022933089989237487
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02257465198636055
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.022420941037125885
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.18988305295351893
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.20181243494153023
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.28625764697790146
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.26819508895277977
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.31482143804896623
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.2778393570333719
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.26508914795704186
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02638051297981292
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.04263887205161154
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.04561843606643379
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.22451042803004384
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.21684035705402493
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.5093319209991023
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.511508650961332
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5164310119580477
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.45940050610806793
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5225508559960872
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5712606320157647
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.4732874430483207
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5270807810593396
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.07184472703374922
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.07745034096296877
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.04587597702629864
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.03740688809193671
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02761152503080666
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02909144398290664
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03164619498420507
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.1118395229568705
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.3786028939066455
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.29868120700120926
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.3836818349082023
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4170612639281899
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.41626651398837566
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.38080736994743347
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.3705274780513719
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.37683349300641567
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.044795688008889556
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.023486719001084566
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03201381000690162
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.029894224018789828
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.048521972028538585
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.045681469957344234
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03999973204918206
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.023608102928847075
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.14214610704220831
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.3290125000057742
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.3897251249291003
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.3467151130316779
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.34328199503943324
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.34262378502171487
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.3931253320770338
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.3474344059359282
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.24797178606968373
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02781136694829911
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.040389122907072306
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03951451205648482
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03591183398384601
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.021821366040967405
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5526830590097234
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5628377529792488
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.6412019680719823
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.644505636068061
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.09120483102742583
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.6087676499737427
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.6039216120261699
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.6582304859766737
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.6015600480604917
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.11115049803629518
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02573650295380503
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.029945243964903057
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02801319898571819
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.02742305293213576
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.03686429304070771
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02776133397128433
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.027830721926875412
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03365594905335456
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.21264278097078204
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.17809770593885332
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.23899553203955293
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.21150401199702173
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.21014812402427197
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.2445424860343337
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.2061681419145316
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.19661692099180073
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.05074135505128652
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03828847699332982
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03999312501400709
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03322939504869282
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.04313445801381022
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.0349209780106321
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.4112002499168739
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.4843977829441428
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.4903560329694301
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.4915567340794951
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.4457987449131906
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.4296839239541441
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.09197445400059223
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4303585870657116
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5040101350750774
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.024858569027855992
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02617858094163239
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.02460830390919
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03717588493600488
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.04124322300776839
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.028430587030015886
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02397413505241275
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.025898639927618206
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.1043569219764322
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.1794910019962117
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.17302490095607936
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.08283083094283938
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.13457807002123445
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.16046754003036767
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.15255207801237702
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.15043492999393493
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.19639238598756492
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.028027581982314587
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03071260405704379
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.034468127065338194
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.10374446993228048
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.08806853299029171
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.09009569697082043
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.1161058290163055
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.087496392079629
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.11432727193459868
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.11910065496340394
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.12097977008670568
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02876695804297924
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.044917252962477505
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.04545256798155606
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.40386458300054073
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.4077890320913866
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.47270543000195175
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.4777729819761589
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.43181484600063413
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4870536590460688
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.44670770689845085
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.08651647705119103
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.09738790499977767
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4421737299999222
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.026843359926715493
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03771389799658209
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.0317788019310683
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.04828042397275567
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.0386904519982636
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03283007303252816
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02721167798154056
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.035534440889023244
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.13622131699230522
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.022702728980220854
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.024206305970437825
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02203530992846936
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.22489160695113242
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.17883552005514503
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.16136516607366502
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.18416268890723586
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.22894494398497045
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.16679790301714092
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.18483606597874314
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.03522718301974237
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.027764381025917828
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.030806610942818224
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03803412604611367
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.0465826130239293
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.4585085680009797
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.022692198981530964
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02195912494789809
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.022190283983945847
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.5419615169521421
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5349045509938151
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5560116919223219
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5229157879948616
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.5112839879002422
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.51744205201976
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.04283752397168428
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.525905228103511
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.04349789896514267
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.04788355098571628
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.05053390306420624
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.11891033500432968
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.12698823399841785
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.022548660985194147
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02204459602944553
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02191602496895939
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.19963796704541892
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.21225026494357735
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.21599577402230352
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.16698882402852178
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.1075819319812581
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.16405251203104854
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.16837943391874433
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.041684041963890195
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.01648678502533585
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.026669953018426895
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02984974009450525
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.1151491820346564
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5013354959664866
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.5004955299664289
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.4991664969129488
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.4950121489819139
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.47992239601444453
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.4696481350110844
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.4016156729776412
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4809491940541193
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.027289369027130306
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03280092298518866
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.036515421932563186
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02351590001489967
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.04424697603099048
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.040532042970880866
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.047168964985758066
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.027240811963565648
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.023709906032308936
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02186520502436906
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.021642591105774045
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02065028401557356
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.1192094529978931
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.21383733698166907
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.24856106203515083
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.2500163021031767
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.24715780606493354
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.2431858410127461
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.25402776908595115
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.18291432596743107
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.1795739020453766
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.09485272702295333
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.02479976403992623
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.026026098988950253
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.026477706036530435
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03097288403660059
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.028464950970374048
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.036985378013923764
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.023530171951279044
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.024765401962213218
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02375203394331038
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.44024161202833056
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.529441854916513
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.5178052850533277
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.0950889439554885
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5438013200182468
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5009632050059736
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.49881463090423495
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5050959560321644
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5222361440537497
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02539766998961568
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03661776892840862
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.025232287007384002
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03874330595135689
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.031017460976727307
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.021251181955449283
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.12546860601287335
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.19929720694199204
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.20118561491835862
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.20740225003100932
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.18070719297975302
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.23099661199375987
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.1980231909547001
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.11017349897883832
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.18241016997490078
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.03988050704356283
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03969292901456356
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.042475104914046824
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.026044407044537365
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03542686998844147
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.034252953017130494
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.028267903020605445
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.03342395497020334
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.04176173894666135
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.044007156044244766
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03008630801923573
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.022420061053708196
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.039663721923716366
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02162625698838383
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5118850610451773
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5551663590595126
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.5343262350652367
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5575061179697514
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.5555363949388266
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5584928159369156
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5011868139263242
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.49656842497643083
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.08929870498832315
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.025921287015080452
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.028139777947217226
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03164089401252568
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03410198795609176
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.032507732044905424
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.046086605056189
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.024565302999690175
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.024843328050337732
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.024190102005377412
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.12219016498420388
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.12410768307745457
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02245869196485728
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.023683938896283507
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.022805509041063488
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.19834892300423235
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.20388978102710098
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.16982230206485838
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.18483265000395477
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.1053371230373159
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.16706307395361364
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.17438088194467127
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.03996222699061036
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.02482222195249051
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03371430607512593
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.03454326989594847
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03776045690756291
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.10781540197785944
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.022756582009606063
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02237293403595686
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.02301623998209834
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.4724735140334815
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.47483677498530596
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.45682308007963
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.46700800699181855
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.44060660898685455
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.4387248740531504
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.4473521619802341
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.3162848219508305
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02106842794455588
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.027861424954608083
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.03356076299678534
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.1268683261005208
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.21501471800729632
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.2170537980273366
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.22248827398288995
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.19748527894262224
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.21461979602463543
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.10420957603491843
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.19224901194684207
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.1941416549962014
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.024888259009458125
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.03846345702186227
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.02856811706442386
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.04895219299942255
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.04894145601429045
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.04337024502456188
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.04814269894268364
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.052814086084254086
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.02496742596849799
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.025057411985471845
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "seconds": 0.0229385900311172
+    },
+    {
+      "path": "/settings",
+      "status": 200,
+      "seconds": 0.022030622931197286
+    },
+    {
+      "path": "/edu_studio",
+      "status": 200,
+      "seconds": 0.01987573003862053
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5414926270022988
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5731792650185525
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.5668757070088759
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.5745158640202135
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.5748738329857588
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.5743062529945746
+    },
+    {
+      "path": "/api/v1/knowledge/list",
+      "status": 200,
+      "seconds": 0.52902501297649
+    },
+    {
+      "path": "/api/v1/notebook/list",
+      "status": 200,
+      "seconds": 0.5386758650420234
+    },
+    {
+      "path": "/api/v1/dashboard/recent?limit=10",
+      "status": 200,
+      "seconds": 0.09095401805825531
+    },
+    {
+      "path": "/api/v1/config/llm",
+      "status": 200,
+      "seconds": 0.026064506033435464
+    },
+    {
+      "path": "/api/v1/mission/health",
+      "status": 200,
+      "seconds": 0.026194529957138002
+    }
+  ]
+}
