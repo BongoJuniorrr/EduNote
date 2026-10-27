@@ -132,11 +132,10 @@ class NarratorAgent(BaseAgent):
             raise ValueError("TTS config 'model' is empty")
 
         # Log configuration info (hide sensitive information)
-        api_key_preview = "Configured" if api_key else "Not configured"
         self.logger.info("TTS Configuration Loaded (OpenAI API):")
         self.logger.info(f"  Model: {model}")
-        self.logger.info(f"  Base URL: {base_url}")
-        self.logger.info(f"  API Key: {api_key_preview}")
+        self.logger.info("  Endpoint: Configured")
+        self.logger.info("  API Key: Configured")
         self.logger.info(f"  Default Voice: {self.default_voice}")
 
     async def process(
