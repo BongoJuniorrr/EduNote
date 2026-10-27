@@ -19,7 +19,8 @@ Edu Studio, and presentations through Presenton.
 Requirements: Linux x86-64, Docker Engine with Compose v2.30 or later, Python 3, OpenSSL,
 32 GB RAM recommended, and at least 80 GB free disk for the full image set and caches.
 A configured LLM provider with available quota is required for generation. Internet access is required
-for initial model downloads. Model weights, datasets, personal files, and provider
+for initial model downloads. Background embedding prewarm is disabled by default;
+local embedding weights download on first use. Model weights, datasets, personal files, and provider
 credentials are deliberately not bundled. NVIDIA GPU is optional; local models
 run much more slowly on CPU.
 
