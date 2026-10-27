@@ -67,3 +67,13 @@ monitoring/
 # Prebuilt release assets do not belong in a source build context.
 runtime/
 *.zip
+
+# AI/editor metadata and private local documents never enter build contexts.
+**/.claude
+**/.codex
+**/.cursor
+**/.agents
+**/.gemini
+**/AGENTS.md
+**/CLAUDE.md
+**/GEMINI.md

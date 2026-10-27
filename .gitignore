@@ -1,7 +1,7 @@
 # Private workspace and local credentials
 .env
 .env.*
-!.env.example
+!/.env.example
 .edunote-access/
 data/
 backups/
@@ -27,3 +27,30 @@ docs/
 # Prebuilt release assets are uploaded separately, never committed.
 runtime/
 *.rootfs.tar.gz*
+
+# Private AI/editor metadata and internal documentation.
+.claude/
+.codex/
+.cursor/
+.agents/
+.gemini/
+.opencode/
+.continue/
+.aider*
+*.[mM][dD]
+!/README.md
+/logs/
+/history/
+/memory/
+/reports/
+/internal/
+/credentials/
+/secrets/
+.ssh/
+.aws/
+*.pem
+*.key
+id_rsa
+id_ed25519
+*.zip
+*.7z
