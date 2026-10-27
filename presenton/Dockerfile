@@ -56,6 +56,7 @@ WORKDIR /app
 
 # Copy FastAPI
 COPY servers/fastapi/ ./servers/fastapi/
+RUN chmod -R a+rX /app/servers/fastapi/static
 COPY start.js LICENSE ./
 
 # Copy nginx configuration
