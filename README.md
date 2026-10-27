@@ -28,7 +28,7 @@ run much more slowly on CPU.
    Runtime images exceed GitHub's per-file limit, so they are divided across ZIPs.
 2. Verify the ZIP checksums: `sha256sum --ignore-missing -c SHA256SUMS`. Extract every ZIP into the
    **same directory**. Part 1 contains this README, the launcher, and source code.
-3. Run `bash start.sh`. It checks runtime-part hashes, imports the prebuilt images,
+3. Enter the extracted `EduNote-0.1.0-beta.1` directory and run `bash start.sh`. It checks runtime-part hashes, imports the prebuilt images,
    generates a new private owner password, and starts the containers. No application
    build is needed. Keep `.env` and `.edunote-access/` private.
 4. Open http://localhost:3782. Username: **owner**. Read your generated password
