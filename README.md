@@ -99,7 +99,7 @@ Model weights and external services remain subject to their own availability and
 
 ## Validation and benchmarks
 
-The bundled runtime regression suite passed **156 tests** (4 external integration tests
+The bundled runtime regression suite passed **172 tests** (5 optional checks skipped and 5 external integration tests
 excluded). The frontend production build and TypeScript checks passed with zero lint
 errors; lint warnings remain. Authentication, representative UI routes, the actual
 queue worker, code execution, PDF ingestion and source-backed retrieval were checked.

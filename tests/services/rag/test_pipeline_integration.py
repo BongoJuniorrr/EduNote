@@ -25,6 +25,8 @@ import shutil
 import sys
 import tempfile
 
+import pytest
+
 # Add project root to path
 project_root = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
@@ -402,12 +404,8 @@ async def main():
     sys.exit(0 if success else 1)
 
 
-# Pytest support
-def pytest_addoption(parser):
-    """Add pytest command line options"""
-    parser.addoption("--pipeline", action="store", default="llamaindex", help="Pipeline to test")
-
-
+# Requires configured embedding/LLM services; opt in with -m integration.
+@pytest.mark.integration
 class TestPipelineIntegration:
     """Pytest test class"""
 
