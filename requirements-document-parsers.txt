@@ -1,0 +1,4 @@
+# Optional extraction runtimes, isolated from the core app if needed.
+# MinerU 4 uses its SDK; 2.x compatibility remains for older installations.
+mineru>=4.0,<5
+docling>=2.70,<3

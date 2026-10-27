@@ -1,0 +1,83 @@
+import { NextRequest, NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import { join, resolve, sep } from "path";
+import { existsSync } from "fs";
+
+export async function POST(request: NextRequest) {
+  try {
+    const { layout_name, components } = await request.json();
+    if (typeof layout_name !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(layout_name)) {
+      return NextResponse.json({error: "Invalid layout name"}, {status: 400});
+    }
+
+    if (!layout_name || !components || !Array.isArray(components)) {
+      return NextResponse.json(
+        {
+          error:
+            "Invalid request body. Expected layout_name and components array.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Define the layouts directory path
+    const layoutsRoot = resolve(process.cwd(), "app_data", "layouts");
+    const layoutsDir = resolve(layoutsRoot, layout_name);
+    if (!layoutsDir.startsWith(layoutsRoot + sep)) {
+      return NextResponse.json({error: "Invalid layout path"}, {status: 400});
+    }
+
+    // Create the directory if it doesn't exist
+    if (!existsSync(layoutsDir)) {
+      await mkdir(layoutsDir, { recursive: true });
+    }
+
+    // Save each component as a separate file
+    const savedFiles = [];
+
+    for (const component of components) {
+      const { slide_number, component_code, component_name } = component;
+
+      if (!component_code || !component_name) {
+        console.warn(
+          `Skipping component for slide ${slide_number}: missing code or name`
+        );
+        continue;
+      }
+
+      if (typeof component_name !== "string" || !/^[A-Za-z0-9_-]{1,80}$/.test(component_name)) {
+        return NextResponse.json({error: "Invalid component name"}, {status: 400});
+      }
+      const fileName = `${component_name}.tsx`;
+      const filePath = resolve(layoutsDir, fileName);
+      if (!filePath.startsWith(layoutsDir + sep)) {
+        return NextResponse.json({error: "Invalid component path"}, {status: 400});
+      }
+      const cleanComponentCode = component_code
+        .replace(/```tsx/g, "")
+        .replace(/```/g, "");
+
+      await writeFile(filePath, cleanComponentCode, "utf8");
+      savedFiles.push({
+        slide_number,
+        component_name,
+        file_path: filePath,
+        file_name: fileName,
+      });
+    }
+
+    return NextResponse.json({
+      success: true,
+      layout_name,
+      path: layoutsDir,
+      saved_files: savedFiles.length,
+      components: savedFiles,
+    });
+  } catch (error) {
+    console.error("Error saving layout:", error);
+    return NextResponse.json(
+      { error: "Failed to save layout components" },
+      { status: 500 }
+    );
+  }
+}

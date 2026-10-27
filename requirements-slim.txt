@@ -1,0 +1,62 @@
+# ============================================
+# EduNote Python Dependencies — SLIM (Production)
+# ============================================
+# Production-optimized subset of requirements.txt.
+# Excludes heavy optional dependencies:
+#   - raganything / docling / MinerU  (GPU PDF parser — not needed with llamaindex)
+#   - kokoro / pydub / soundfile      (local GPU TTS — use TTS_BINDING=openai instead)
+#   - nvidia-ml-py                    (GPU VRAM admission control for queue worker)
+#
+# Python >= 3.10 required
+# ============================================
+
+# Core utilities
+python-dotenv>=1.0.0
+cryptography>=42.0.0
+PyYAML>=6.0
+tiktoken>=0.5.0
+jinja2>=3.1.0
+
+# HTTP and API clients
+requests>=2.32.2
+openai>=1.30.0
+anthropic>=0.30.0
+perplexityai>=0.1.0
+dashscope>=1.14.0
+aiohttp>=3.9.4
+httpx>=0.27.0
+urllib3>=2.2.1
+
+# Async support
+nest_asyncio>=1.5.8
+tenacity>=8.0.0
+
+# Web framework and server
+fastapi>=0.100.0
+uvicorn[standard]>=0.24.0
+websockets>=12.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
+pytesseract>=0.3.13
+Pillow>=10.0.0
+
+# VGU Course - Reranker and enhanced retrieval
+sentence-transformers==5.7.0
+transformers==4.57.6
+rank-bm25>=0.2.2
+
+# LlamaIndex
+llama-index>=0.14.12
+
+# Academic and research tools
+arxiv>=2.0.0
+
+# Scientific computing
+numpy>=1.24.0,<2.0.0
+
+# PDF / document parsing
+PyMuPDF>=1.26.0
+python-docx>=1.1.0
+
+# Testing
+pytest>=7.0.0

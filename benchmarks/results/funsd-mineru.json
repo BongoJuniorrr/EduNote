@@ -1,0 +1,130 @@
+{
+  "benchmark": "FUNSD",
+  "split": "test",
+  "selection": "first sorted official test IDs",
+  "parser": "mineru",
+  "mineru_tier": "basic",
+  "requested": 10,
+  "successful": 10,
+  "results": [
+    {
+      "id": "82092117",
+      "cer": 0.2749806351665376,
+      "wer": 0.36486486486486486,
+      "token_precision": 0.9418604651162791,
+      "token_recall": 0.7297297297297297,
+      "token_f1": 0.8223350253807107,
+      "seconds": 58.942808920983225,
+      "image_sha256": "279654591d7de3745e5efaf39d3be413baab267be7170082d1922690566c5ad1",
+      "annotation_sha256": "4a492dc09486d4aec7c8ed6cfa780e7779f16572db0845f4d2f6c52057d236a8"
+    },
+    {
+      "id": "82200067_0069",
+      "cer": 30.084525357607284,
+      "wer": 8.77124183006536,
+      "token_precision": 0.08421797593772117,
+      "token_recall": 0.7777777777777778,
+      "token_f1": 0.15197956577266922,
+      "seconds": 25.851090115029365,
+      "image_sha256": "c48d22b3c6692f8b1c08398d66fc9a3f9cc8b5bf0ff6641336228ae3cd117e23",
+      "annotation_sha256": "a6a40b60914548b3df12d27f1a27dd2e356f4131924500f0284f038e0d3d9677"
+    },
+    {
+      "id": "82250337_0338",
+      "cer": 0.13159968479117415,
+      "wer": 0.205607476635514,
+      "token_precision": 0.9567307692307693,
+      "token_recall": 0.9299065420560748,
+      "token_f1": 0.943127962085308,
+      "seconds": 3.45394108700566,
+      "image_sha256": "5b5083f4127a00a212fcc5c1cbb580e9d1851180f4fbb888ca7c5911baa6da4f",
+      "annotation_sha256": "25daa180c7bf67db2b9493bd350c0ecce9811f372e66ff7acef5ab285d264838"
+    },
+    {
+      "id": "82251504",
+      "cer": 0.19732704402515724,
+      "wer": 0.25892857142857145,
+      "token_precision": 0.9490740740740741,
+      "token_recall": 0.9151785714285714,
+      "token_f1": 0.9318181818181818,
+      "seconds": 4.219521060003899,
+      "image_sha256": "8fd472ccbdbd5349d8fbc6adf52311d69d47651a289b482b9850db20e9c43354",
+      "annotation_sha256": "e89724ad3b5fc8acbf5b06208c49310dc1eea89c36c42d70e5894de9dee74df1"
+    },
+    {
+      "id": "82252956_2958",
+      "cer": 1.1424050632911393,
+      "wer": 1.9298245614035088,
+      "token_precision": 0.3786764705882353,
+      "token_recall": 0.9035087719298246,
+      "token_f1": 0.5336787564766838,
+      "seconds": 3.3529458639677614,
+      "image_sha256": "ec6f99f85a76659911e73871ca158240d6ac083088b5b88b337609c649e08772",
+      "annotation_sha256": "b9857bc49a8640e0686e71b0d80b00619c06b454c3651829f0a50b1c8583e75e"
+    },
+    {
+      "id": "82253058_3059",
+      "cer": 0.229020979020979,
+      "wer": 0.31521739130434784,
+      "token_precision": 0.9811320754716981,
+      "token_recall": 0.8478260869565217,
+      "token_f1": 0.9096209912536443,
+      "seconds": 3.2687263150000945,
+      "image_sha256": "4f017fd7a8dc63125cd4e7faafc3c97b8dc7cbef3a265e17878808dee489dda4",
+      "annotation_sha256": "f9cae322c40e1dba31959020ce56b0ddec6c0f0f7de0b1bb91e52eedb96bf4ec"
+    },
+    {
+      "id": "82253245_3247",
+      "cer": 0.3712480252764613,
+      "wer": 0.45064377682403434,
+      "token_precision": 0.9804878048780488,
+      "token_recall": 0.8626609442060086,
+      "token_f1": 0.9178082191780823,
+      "seconds": 4.432234421023168,
+      "image_sha256": "1023df93d5a35aba85c3ad232a4dbb9f6d8609068f5ec09f1c59a7e5738318d0",
+      "annotation_sha256": "537d44c3ccc8a27102dc195155569561d4abbfadaf1a4226d69a8e291e61df4b"
+    },
+    {
+      "id": "82253362_3364",
+      "cer": 0.4476693051890941,
+      "wer": 0.6435185185185185,
+      "token_precision": 0.9371980676328503,
+      "token_recall": 0.8981481481481481,
+      "token_f1": 0.9172576832151301,
+      "seconds": 4.63842727500014,
+      "image_sha256": "5348da0a6c2ba1a2703257ba6d70fccf55d9b36cebedd30a0b16cb5d92f10bb3",
+      "annotation_sha256": "9e8f27ecb37aebcf6cd50b13cb661922c32ae598f66fed1a4cbe0a0af58ba5b7"
+    },
+    {
+      "id": "82254765",
+      "cer": 0.41736227045075125,
+      "wer": 0.6097560975609756,
+      "token_precision": 0.8172043010752689,
+      "token_recall": 0.6178861788617886,
+      "token_f1": 0.7037037037037038,
+      "seconds": 2.777091865078546,
+      "image_sha256": "a1c4c8af7510ee0e6c9683e8f404ad67d23ee6db01168d226c1b63a940a7551b",
+      "annotation_sha256": "bc7f455c112693fd2a5e8502239024a44895232f8e7f561b7a095386ed604811"
+    },
+    {
+      "id": "82491256",
+      "cer": 0.7527839643652561,
+      "wer": 0.8985507246376812,
+      "token_precision": 0.9852941176470589,
+      "token_recall": 0.9710144927536232,
+      "token_f1": 0.9781021897810219,
+      "seconds": 1.83003698696848,
+      "image_sha256": "502fd8142fba98fd13137e083a301e0a867329b79dd2591fc2c8044e0d8f1af7",
+      "annotation_sha256": "03e9917e5f8481d0d37c181b81506905620168a1f3f1703311ad8f5dd26ce292"
+    }
+  ],
+  "macro_metrics": {
+    "cer": 3.404892232918383,
+    "wer": 1.4448153813243376,
+    "token_precision": 0.8011876121652003,
+    "token_recall": 0.8453637243848068,
+    "token_f1": 0.7809432278665136,
+    "seconds": 11.276682391006034
+  },
+  "scope": "English noisy forms. Entity annotation order differs from page reading order; report order-sensitive CER/WER and unordered token scores separately."
+}

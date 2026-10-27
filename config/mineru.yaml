@@ -1,0 +1,8 @@
+# P100-compatible local OCR. Keep MinerU's modern Torch stack out of the app's
+# legacy CUDA environment. Standard/advanced VLM deployments should use the
+# separately configured MinerU API service instead.
+model:
+  small_backend: onnx
+  source: huggingface
+telemetry:
+  enabled: false
