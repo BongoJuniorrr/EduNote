@@ -836,6 +836,7 @@ function HydratedGlobalProvider({ children }: { children: React.ReactNode }) {
       // Clean up WebSocket reference on close
       if (solverWs.current === ws) {
         solverWs.current = null;
+        setSolverState(prev => ({ ...prev, isSolving: false }));
       }
     };
   };

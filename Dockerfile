@@ -97,7 +97,7 @@ FROM python:3.11-slim AS production
 # Labels
 LABEL maintainer="Tran Huu Vu Phuong" \
       description="EduNote: AI-Powered Personalized Learning Assistant" \
-      version="0.1.0-beta.1"
+      version="0.1.0-beta.2"
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \

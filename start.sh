@@ -6,7 +6,7 @@ docker compose version >/dev/null
 # All release ZIP parts must be extracted into this directory before first use.
 if [[ -f runtime/manifest.json ]]; then
   python3 scripts/load_release_images.py
-elif ! docker image inspect edunote:0.1.0-beta.1 edunote-code-runner:0.1.0-beta.1 edunote-presenton:0.1.0-beta.1 edunote-gateway:0.1.0-beta.1 edunote-postgres:0.1.0-beta.1 edunote-redis:0.1.0-beta.1 >/dev/null 2>&1; then
+elif ! docker image inspect edunote:0.1.0-beta.2 edunote-code-runner:0.1.0-beta.2 edunote-presenton:0.1.0-beta.2 edunote-gateway:0.1.0-beta.2 edunote-postgres:0.1.0-beta.2 edunote-redis:0.1.0-beta.2 >/dev/null 2>&1; then
   echo 'Extract all runtime ZIP parts, or build from source using README.md.' >&2
   exit 2
 fi

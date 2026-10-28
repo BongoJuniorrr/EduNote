@@ -45,6 +45,10 @@ interface NavItem {
 // All available navigation items (static reference)
 const ALL_NAV_ITEMS: Record<string, { icon: LucideIcon; nameKey: string }> = {
   "/": { icon: Home, nameKey: "Home" },
+  "/evidence": { icon: BookOpen, nameKey: "Evidence Workspace" },
+  "/study-packs": { icon: GraduationCap, nameKey: "Study Packs" },
+  "/review": { icon: History, nameKey: "Adaptive Review" },
+  "/jobs": { icon: Workflow, nameKey: "Job Center" },
   "/history": { icon: History, nameKey: "History" },
   "/knowledge": { icon: BookOpen, nameKey: "Knowledge Bases" },
   "/notebook": { icon: Book, nameKey: "Notebooks" },
@@ -105,7 +109,7 @@ export default function Sidebar() {
       {
         id: "start" as const,
         name: t("Workspace"),
-        items: buildNavItems(sidebarNavOrder.start),
+        items: buildNavItems([...sidebarNavOrder.start, ...["/evidence", "/study-packs", "/review", "/jobs"].filter(href => !sidebarNavOrder.start.includes(href))]),
       },
       {
         id: "learnResearch" as const,

@@ -279,36 +279,37 @@ class GenerateAgent(BaseAgent):
             raise ValueError(f"Failed to parse question JSON: {parse_error}") from parse_error
 
         # Validate required fields
-        if "question" not in question:
-            raise ValueError("Question response missing 'question' field")
+        if (
+            not isinstance(question, dict)
+            or not isinstance(question.get("question"), str)
+            or not question["question"].strip()
+        ):
+            raise ValueError("Question response requires nonempty question text")
 
         # Ensure question_type exists
         if "question_type" not in question:
             question["question_type"] = "written"
 
-        # Validate options for choice questions
+        # Never turn malformed generation into a successful placeholder quiz.
         if question.get("question_type") == "choice":
             options = question.get("options")
-            if not options:
-                # Create default options if missing
-                self.logger.warning("Choice question missing options, adding placeholder")
-                question["options"] = {
-                    "A": "Option A (placeholder)",
-                    "B": "Option B (placeholder)",
-                    "C": "Option C (placeholder)",
-                    "D": "Option D (placeholder)",
-                }
-            elif not isinstance(options, dict):
-                # Convert to dict if it's a list or other format
-                self.logger.warning(f"Options is not a dict: {type(options)}, converting")
-                if isinstance(options, list):
-                    question["options"] = {
-                        chr(65 + i): str(opt) for i, opt in enumerate(options[:4])
-                    }
-                else:
-                    question["options"] = {"A": str(options)}
-            elif len(options) < 2:
-                self.logger.warning(f"Choice question has only {len(options)} options")
+            if isinstance(options, list):
+                options = {chr(65 + i): str(value) for i, value in enumerate(options)}
+            if not isinstance(options, dict) or not 2 <= len(options) <= 6:
+                raise ValueError("Choice questions require 2–6 real options")
+            texts = [str(value).strip() for value in options.values()]
+            if any(not value or "placeholder" in value.lower() for value in texts) or len(
+                set(texts)
+            ) != len(texts):
+                raise ValueError("Choice options must be nonempty and distinct")
+            answer = str(question.get("correct_answer", "")).strip()
+            if answer not in options:
+                matching = [key for key, value in options.items() if str(value).strip() == answer]
+                if not matching:
+                    raise ValueError("Choice question answer must identify an existing option")
+                answer = matching[0]
+            question["correct_answer"] = answer
+            question["options"] = options
 
         return question
 

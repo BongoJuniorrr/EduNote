@@ -1,5 +1,5 @@
 "use client";
-import { apiFetch } from '@/lib/api';
+import { apiFetch, readApiResponse } from '@/lib/api';
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
@@ -189,6 +189,7 @@ export default function NotebookPage() {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [notebookError, setNotebookError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   // Collapse states
@@ -286,11 +287,12 @@ export default function NotebookPage() {
   async function fetchNotebooks() {
     try {
         const res = await apiFetch(apiUrl("/api/v1/notebook/list"));
-        const data = await res.json();
+        const data = await readApiResponse(res);
         setNotebooks(data.notebooks || []);
+        setNotebookError("");
     }
     catch (err) {
-        console.error("Failed to fetch notebooks:", err);
+        setNotebookError(String(err));
     }
     finally {
         setLoading(false);
@@ -300,11 +302,11 @@ export default function NotebookPage() {
   const fetchNotebookDetail = async (notebookId: string) => {
     try {
       const res = await apiFetch(apiUrl(`/api/v1/notebook/${notebookId}`));
-      const data = await res.json();
+      const data = await readApiResponse(res);
       setSelectedNotebook(data);
       setSelectedRecord(null);
     } catch (err) {
-      console.error("Failed to fetch notebook detail:", err);
+      setNotebookError(String(err));
     }
   };
 
@@ -317,7 +319,7 @@ export default function NotebookPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newNotebook),
       });
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         fetchNotebooks();
         setShowCreateModal(false);
@@ -344,7 +346,7 @@ export default function NotebookPage() {
           }),
         },
       );
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         fetchNotebooks();
         if (selectedNotebook?.id === editingNotebook.id) {
@@ -363,7 +365,7 @@ export default function NotebookPage() {
       const res = await apiFetch(apiUrl(`/api/v1/notebook/${notebookId}`), {
         method: "DELETE",
       });
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         fetchNotebooks();
         if (selectedNotebook?.id === notebookId) {
@@ -408,7 +410,7 @@ export default function NotebookPage() {
           method: "DELETE",
         },
       );
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         fetchNotebookDetail(selectedNotebook.id);
         if (selectedRecord?.id === record.id) {
@@ -446,7 +448,7 @@ export default function NotebookPage() {
           }),
         },
       );
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         await fetchNotebookDetail(selectedNotebook.id);
         if (data.record) {
@@ -586,7 +588,7 @@ export default function NotebookPage() {
           }),
         },
       );
-      const data = await res.json();
+      const data = await readApiResponse(res);
       if (data.success) {
         if (data.record) {
           applyUpdatedEditNoteLocally(data.record as NotebookRecord);
@@ -751,7 +753,7 @@ export default function NotebookPage() {
 
     try {
       const res = await apiFetch(apiUrl("/api/v1/notebook/list"));
-      const data = await res.json();
+      const data = await readApiResponse(res);
       // Filter out current notebook
       const others = (data.notebooks || []).filter(
         (nb: NotebookSummary) =>
@@ -771,7 +773,7 @@ export default function NotebookPage() {
 
     try {
       const res = await apiFetch(apiUrl(`/api/v1/notebook/${notebookId}`));
-      const data = await res.json();
+      const data = await readApiResponse(res);
       setImportSourceRecords(data.records || []);
       setSelectedImportRecords(new Set());
     } catch (err) {
@@ -854,6 +856,7 @@ export default function NotebookPage() {
       className="h-screen flex gap-4 p-4 animate-fade-in"
       style={{ justifyContent: "flex-start" }}
     >
+      {notebookError && <p role="alert" className="fixed top-4 right-4 z-50 max-w-lg rounded-lg bg-red-950 p-4 text-red-100">{notebookError}</p>}
       {/* Left Panel: Notebook List */}
       <div
         className={`flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 flex-shrink-0 ${leftCollapsed ? "overflow-hidden" : ""}`}

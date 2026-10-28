@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "EduNote"
-version = "0.1.0b1"
+version = "0.1.0b2"
 description = "An intelligent learning companion with multi-agent collaboration and RAG"
 requires-python = ">=3.11"
 readme = "README.md"

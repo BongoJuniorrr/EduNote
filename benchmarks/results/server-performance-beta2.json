@@ -1,0 +1,146 @@
+{
+  "checked_at": "2026-10-28T21:40:40.359616+00:00",
+  "model": "Qwen/Qwen3.5-9B:Q6_K",
+  "method": "Streaming chat/completions; fixed 1..16 counting prompt, max_tokens=64, temperature=0; sequential then concurrency=2. No retries.",
+  "requests": 12,
+  "successful": 12,
+  "status_counts": {
+    "200": 12
+  },
+  "wall_seconds": 28.926742014940828,
+  "percentile_method": "nearest-rank, includes all successful requests including first request",
+  "latency_seconds": {
+    "p50": 1.875261602923274,
+    "p95": 9.295203923946247,
+    "p99": 9.295203923946247
+  },
+  "ttft_seconds": {
+    "p50": 0.4635096329730004,
+    "p95": 7.873971475055441,
+    "p99": 7.873971475055441
+  },
+  "samples": [
+    {
+      "index": 1,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 9.295203923946247,
+      "ttft_seconds": 7.873971475055441,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 2,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.8839526670053601,
+      "ttft_seconds": 0.4648267140146345,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 3,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.8689923831261694,
+      "ttft_seconds": 0.45179345505312085,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 4,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.8893493309151381,
+      "ttft_seconds": 0.47622864902950823,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 5,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.866916174069047,
+      "ttft_seconds": 0.4449578900821507,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 6,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.868819914991036,
+      "ttft_seconds": 0.4635096329730004,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 8,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 1.875261602923274,
+      "ttft_seconds": 0.4539790069684386,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 7,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 3.4563554089982063,
+      "ttft_seconds": 2.0460717119276524,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 10,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 1.8397805448621511,
+      "ttft_seconds": 0.4312689108774066,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 9,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 3.394598021171987,
+      "ttft_seconds": 1.9933650630991906,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 11,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 1.8280968479812145,
+      "ttft_seconds": 0.42005492793396115,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 12,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 3.3984365640208125,
+      "ttft_seconds": 1.98649977799505,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    }
+  ],
+  "limitations": "Small deployment-specific sample, includes network/proxy/model-load latency. Provider inference hardware is not assumed to match the EduNote application server. Token throughput is omitted when the upstream stream does not report usage.",
+  "hardware_context": "Inference hosted on the same server: two NVIDIA Tesla P100 16 GiB GPUs; Qwen uses one GPU with existing processes preserved. Small warm sample; other GPU workloads continue."
+}

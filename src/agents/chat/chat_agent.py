@@ -1,3 +1,5 @@
+import asyncio
+
 #!/usr/bin/env python
 """
 ChatAgent - Lightweight conversational AI with multi-turn support.
@@ -205,7 +207,7 @@ class ChatAgent(BaseAgent):
                     only_need_context=True,
                     **retrieval_overrides,
                 )
-                rag_context = rag_result.get("content") or rag_result.get("answer", "")
+                rag_context = rag_result.get("content", "")
                 if rag_context:
                     context_parts.append(f"[Knowledge Base: {kb_name}]\n{rag_context}")
                     sources["rag"] = self._build_rag_sources(
@@ -219,14 +221,17 @@ class ChatAgent(BaseAgent):
                         f"provider={rag_result.get('provider', 'unknown')}, "
                         f"mode={rag_result.get('mode', rag_mode)} in {elapsed:.2f}s"
                     )
+                if not rag_context:
+                    raise ValueError("No supporting evidence found in the selected knowledge base. Refine the question or use Evidence Workspace to inspect sources.")
             except Exception as e:
-                self.logger.warning(f"RAG search failed: {e}")
+                self.logger.warning(f"RAG search failed: {type(e).__name__}")
+                raise ValueError("Knowledge retrieval is unavailable or found no supporting material. Check the index in Knowledge Bases or use Evidence Workspace; disable RAG explicitly to request a general answer.") from e
 
         # Web search
         if enable_web_search:
             try:
                 self.logger.info(f"Web search: {message[:50]}...")
-                web_result = web_search(query=message, verbose=False)
+                web_result = await asyncio.to_thread(web_search, query=message, verbose=False)
                 web_answer = web_result.get("answer", "")
                 web_citations = web_result.get("citations", [])
 
@@ -238,7 +243,8 @@ class ChatAgent(BaseAgent):
                         f"{len(web_citations)} citations"
                     )
             except Exception as e:
-                self.logger.warning(f"Web search failed: {e}")
+                self.logger.warning(f"Web search failed: {type(e).__name__}")
+                raise ValueError("Web search is unavailable. Check Search settings or disable Web Search explicitly.") from e
 
         context = "\n\n".join(context_parts)
         return context, sources

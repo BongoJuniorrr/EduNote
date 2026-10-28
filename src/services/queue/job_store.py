@@ -53,6 +53,9 @@ class PersistentJobStore:
             # Polling must remain readable while a worker commits status or a
             # heartbeat. Keep SQLite's default FULL synchronous durability.
             connection.execute("PRAGMA journal_mode = WAL")
+            # API and worker can start together; serialize schema inspection
+            # and ALTER statements so concurrent first starts cannot race.
+            connection.execute("BEGIN IMMEDIATE")
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS jobs (
@@ -73,23 +76,72 @@ class PersistentJobStore:
             columns = {row["name"] for row in connection.execute("PRAGMA table_info(jobs)")}
             if "result" not in columns:
                 connection.execute("ALTER TABLE jobs ADD COLUMN result TEXT")
-            for column, definition in (("lease_owner", "TEXT"), ("lease_expires", "REAL"), ("attempts", "INTEGER NOT NULL DEFAULT 0")):
+            for column, definition in (
+                ("lease_owner", "TEXT"),
+                ("lease_expires", "REAL"),
+                ("attempts", "INTEGER NOT NULL DEFAULT 0"),
+                ("request_key", "TEXT"),
+            ):
                 if column not in columns:
                     connection.execute(f"ALTER TABLE jobs ADD COLUMN {column} {definition}")
+            connection.execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_jobs_request ON jobs(owner_id,kind,request_key) WHERE request_key IS NOT NULL"
+            )
             connection.execute(
                 "CREATE INDEX IF NOT EXISTS idx_jobs_ready ON jobs(status, priority DESC, created_at ASC)"
             )
 
-    def enqueue(self, owner_id: str, kind: str, payload: dict, rank: str = "free") -> Job:
+    def enqueue(
+        self,
+        owner_id: str,
+        kind: str,
+        payload: dict,
+        rank: str = "free",
+        request_key: str | None = None,
+    ) -> Job:
         if not owner_id or not kind:
             raise ValueError("owner_id and kind are required")
         now = int(time.time())
         job_id = f"job_{secrets.token_urlsafe(16)}"
         with self._connect() as connection:
+            if request_key:
+                connection.execute("BEGIN IMMEDIATE")
+                existing = connection.execute(
+                    "SELECT * FROM jobs WHERE owner_id=? AND kind=? AND request_key=?",
+                    (owner_id, kind, request_key),
+                ).fetchone()
+                if existing:
+                    if json.loads(existing["payload"]) != payload:
+                        raise ValueError(
+                            "Request ID was already used with a different configuration or input"
+                        )
+                    return self._from_row(existing)
             connection.execute(
-                "INSERT INTO jobs (id, owner_id, kind, priority, status, payload, created_at, updated_at) "
-                "VALUES (?, ?, ?, ?, 'queued', ?, ?, ?)",
-                (job_id, owner_id, kind, 0, json.dumps(payload), now, now),
+                "INSERT INTO jobs (id, owner_id, kind, priority, status, payload, created_at, updated_at, request_key) "
+                "VALUES (?, ?, ?, ?, 'queued', ?, ?, ?, ?)",
+                (job_id, owner_id, kind, 0, json.dumps(payload), now, now, request_key),
+            )
+        return self.get(job_id, owner_id)
+
+    def list(self, owner_id: str | None, limit: int = 100) -> list[Job]:
+        with self._connect() as connection:
+            if owner_id is None:
+                rows = connection.execute(
+                    "SELECT * FROM jobs ORDER BY created_at DESC, rowid DESC LIMIT ?",
+                    (min(max(limit, 1), 200),),
+                ).fetchall()
+            else:
+                rows = connection.execute(
+                    "SELECT * FROM jobs WHERE owner_id = ? ORDER BY created_at DESC, rowid DESC LIMIT ?",
+                    (owner_id, min(max(limit, 1), 200)),
+                ).fetchall()
+        return [self._from_row(row) for row in rows]
+
+    def cancel(self, job_id: str, owner_id: str) -> Job:
+        with self._connect() as connection:
+            connection.execute(
+                "UPDATE jobs SET status = 'cancelled', updated_at = ? WHERE id = ? AND owner_id = ? AND status IN ('queued', 'running')",
+                (int(time.time()), job_id, owner_id),
             )
         return self.get(job_id, owner_id)
 
@@ -154,19 +206,32 @@ class PersistentJobStore:
             predicate += " AND status = 'running' AND lease_owner = ? AND lease_expires > ?"
             values.extend([worker_id, time.time()])
         with self._connect() as connection:
-            result = connection.execute(f"UPDATE jobs SET {', '.join(updates)} WHERE {predicate}", values)
+            result = connection.execute(
+                f"UPDATE jobs SET {', '.join(updates)} WHERE {predicate}", values
+            )
             if result.rowcount != 1 and worker_id is None:
                 raise LookupError("Job not found")
         return self.get(job_id)
 
+    def owns_lease(self, job_id: str, worker_id: str) -> bool:
+        with self._connect() as connection:
+            row = connection.execute(
+                "SELECT 1 FROM jobs WHERE id=? AND status='running' AND lease_owner=? AND lease_expires>?",
+                (job_id, worker_id, time.time()),
+            ).fetchone()
+        return bool(row)
+
     def renew_lease(self, job_id: str, worker_id: str, lease_seconds: float = 60) -> bool:
         now = time.time()
         with self._connect() as connection:
-            return connection.execute(
-                "UPDATE jobs SET lease_expires = ?, updated_at = ? WHERE id = ? "
-                "AND status = 'running' AND lease_owner = ? AND lease_expires > ?",
-                (now + lease_seconds, int(now), job_id, worker_id, now),
-            ).rowcount == 1
+            return (
+                connection.execute(
+                    "UPDATE jobs SET lease_expires = ?, updated_at = ? WHERE id = ? "
+                    "AND status = 'running' AND lease_owner = ? AND lease_expires > ?",
+                    (now + lease_seconds, int(now), job_id, worker_id, now),
+                ).rowcount
+                == 1
+            )
 
     def get(self, job_id: str, owner_id: str | None = None) -> Job:
         with self._connect() as connection:

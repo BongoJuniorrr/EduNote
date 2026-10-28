@@ -10,7 +10,8 @@ import urllib.request
 
 PAGES = ['/', '/history', '/knowledge', '/notebook', '/notebook/canvas', '/about',
          '/question', '/solver', '/guide', '/mission', '/ideagen', '/slide_pro',
-         '/edu_studio', '/edu_studio/qwen_teacher', '/research', '/co_writer', '/settings']
+         '/edu_studio', '/edu_studio/qwen_teacher', '/research', '/co_writer', '/settings',
+         '/evidence', '/study-packs', '/review', '/jobs', '/settings/diagnostics']
 API = ['/api/v1/config/status', '/api/v1/config/documents', '/api/v1/settings/sidebar',
        '/api/v1/edu-studio/templates', '/api/v1/knowledge/health', '/api/v1/notebook/health',
        '/slide_pro/_presenton/api/v1/ppt/presentation/all']
