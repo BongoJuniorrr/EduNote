@@ -473,3 +473,41 @@ async def test_missing_index_message_is_not_published_as_evidence(tmp_path, monk
     monkeypatch.setattr(rag_tool, "rag_search", no_index)
     sources = await workflows.collect_sources({"topic": "Unknown fact", "kb_name": "empty"})
     assert sources == [] and store.list("source") == []
+
+
+@pytest.mark.parametrize("name", ["../outside", "/outside", "escape", "demo/../demo", "missing"])
+def test_evidence_rejects_paths_and_symlink_catalog_entries(tmp_path, monkeypatch, name):
+    from src.api.routers import learning as routes
+    from src.services.rag import service
+
+    root = tmp_path / "kbs"
+    (root / "demo").mkdir(parents=True)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (root / "escape").symlink_to(outside, target_is_directory=True)
+    monkeypatch.setattr(service, "DEFAULT_KB_BASE_DIR", str(root))
+    calls = []
+    monkeypatch.setattr(routes, "enqueue", lambda *args: calls.append(args))
+    app = FastAPI()
+    app.include_router(routes.router, prefix="/learning")
+    response = TestClient(app).post("/learning/evidence", json={
+        "topic": "Explain optics", "kb_name": name, "request_id": "catalog-check-01"})
+    assert response.status_code == 422
+    assert not calls
+
+
+def test_evidence_accepts_only_named_server_catalog_directory(tmp_path, monkeypatch):
+    from src.api.routers import learning as routes
+    from src.services.rag import service
+
+    root = tmp_path / "kbs"
+    (root / "Optics notes").mkdir(parents=True)
+    monkeypatch.setattr(service, "DEFAULT_KB_BASE_DIR", str(root))
+    calls = []
+    monkeypatch.setattr(routes, "enqueue", lambda *args: calls.append(args) or {"job": {"id": "test"}})
+    app = FastAPI()
+    app.include_router(routes.router, prefix="/learning")
+    response = TestClient(app).post("/learning/evidence", json={
+        "topic": "Explain optics", "kb_name": "Optics notes", "request_id": "catalog-check-02"})
+    assert response.status_code == 202
+    assert calls[0][1]["kb_name"] == "Optics notes"

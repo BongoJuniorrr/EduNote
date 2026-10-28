@@ -52,7 +52,7 @@ Compose startup files and ignores SQLite WAL/SHM coordination-file churn.
 Existing knowledge indexes still require
 reindexing when their parser or embedding model changes.
 
-The release was checked with 220 passing backend regression tests (5 skipped and
+The release was checked with 226 passing backend regression tests (5 skipped and
 5 external-integration tests deselected), a production frontend build and TypeScript,
 and browser checks of the learning pages and existing core pages. The actual
 configured Qwen endpoint was also used for Evidence → Study Pack → quiz → review

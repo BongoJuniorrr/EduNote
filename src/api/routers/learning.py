@@ -70,9 +70,17 @@ def create_evidence(request: EvidenceRequest):
         from src.services.rag.service import DEFAULT_KB_BASE_DIR
 
         root = Path(DEFAULT_KB_BASE_DIR).resolve()
-        path = (root / request.kb_name).resolve()
-        if path.parent != root or not path.is_dir():
+        # Resolve an identifier against the server-owned catalog. Never construct
+        # a filesystem path from a request string, including before validation.
+        entries = root.iterdir() if root.is_dir() else ()
+        selected = next(
+            (entry for entry in entries
+             if entry.name == request.kb_name and not entry.is_symlink() and entry.is_dir()),
+            None,
+        )
+        if selected is None:
             raise HTTPException(422, "Knowledge base not found")
+        request.kb_name = selected.name
     if request.notebook_id:
         from src.api.utils.notebook_manager import notebook_manager
 
