@@ -79,7 +79,7 @@ from .exceptions import (
     LLMRateLimitError,
     LLMTimeoutError,
 )
-from .utils import is_local_llm_server
+from .utils import is_local_llm_server, normalize_system_messages
 
 # Initialize logger
 logger = get_logger("LLMFactory")
@@ -284,7 +284,7 @@ async def complete(
         "model": model,
         "api_key": api_key,
         "base_url": base_url,
-        "messages": messages,
+        "messages": normalize_system_messages(messages),
         **kwargs,
     }
 
@@ -362,7 +362,7 @@ async def stream(
         "model": model,
         "api_key": api_key,
         "base_url": base_url,
-        "messages": messages,
+        "messages": normalize_system_messages(messages),
         **kwargs,
     }
 

@@ -382,7 +382,9 @@ class ChatAgent(BaseAgent):
         if context:
             context_template = self.get_prompt("context_template", "Reference context:\n{context}")
             context_msg = context_template.format(context=context)
-            messages.append({"role": "system", "content": context_msg})
+            # Strict templates (including llama.cpp's Qwen template) only
+            # accept one system message, at the start of the conversation.
+            messages[0]["content"] += "\n\n" + context_msg
 
         # Add conversation history
         for msg in history:
