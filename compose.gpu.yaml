@@ -1,0 +1,6 @@
+# Optional NVIDIA runtime; tested on Tesla P100 with CUDA 12.1 / driver 535.
+services:
+  edunote:
+    gpus: all
+  queue-worker:
+    gpus: all

@@ -1,0 +1,15 @@
+{
+  "scope": "Finite read-only mixed UI/API workload against restored QA release; does not establish GPU/LLM concurrent-generation capacity.",
+  "requests": 400,
+  "concurrency": 8,
+  "elapsed_seconds": 11.460152662009932,
+  "requests_per_second": 34.9035490012265,
+  "status_counts": {
+    "200": 400
+  },
+  "latency_seconds": {
+    "p50": 0.1102007309673354,
+    "p95": 0.6015600480604917,
+    "p99": 1.6108002699911594
+  }
+}

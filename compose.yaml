@@ -1,0 +1,165 @@
+name: edunote-beta
+x-app: &app
+  image: edunote:0.1.0-beta.1
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: production
+  env_file: .env
+  extra_hosts: ["host.docker.internal:host-gateway"]
+  restart: unless-stopped
+  environment: &environment
+    BACKEND_PORT: "8001"
+    FRONTEND_PORT: "3782"
+    EDUNOTE_ENV: production
+    EDUNOTE_QUEUE_DB: /app/data/storage/system/edunote_queue.sqlite3
+    EDUNOTE_STORAGE_ROOT: /app/data/storage
+    EDUNOTE_GPU_LOCK: /app/data/storage/system/gpu.lock
+    EDUNOTE_QUEUE_WORKER_ENABLED: "true"
+    RUN_CODE_RUNNER_SPOOL: /runner_spool
+    HF_HOME: /app/cache/huggingface
+    MINERU_HOME: /app/cache/mineru
+    PRESENTON_INTERNAL_URL: http://presenton
+    ENABLE_LEGACY_SLIDE_PRO: "false"
+  volumes: &volumes
+    - ./config:/app/config:ro
+    - ./data/user:/app/data/user
+    - ./data/knowledge_bases:/app/data/knowledge_bases
+    - ./data/storage:/app/data/storage
+    - model-cache:/app/cache
+    - code-spool:/runner_spool
+  networks: [edunote]
+  logging:
+    driver: json-file
+    options: {max-size: 20m, max-file: "3"}
+services:
+  edunote:
+    <<: *app
+    mem_limit: 24g
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1:8001/]
+      interval: 20s
+      timeout: 10s
+      start_period: 120s
+      retries: 5
+  queue-worker:
+    <<: *app
+    command: [python, scripts/run_queue_worker.py]
+    healthcheck:
+      test: [CMD, python, -c, "import os,time; assert time.time()-os.stat('/tmp/edunote-worker-heartbeat').st_mtime < 900"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    depends_on:
+      edunote: {condition: service_healthy}
+  code-runner:
+    image: edunote-code-runner:0.1.0-beta.1
+    build: {context: ., dockerfile: Dockerfile.code-runner}
+    restart: unless-stopped
+    network_mode: none
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [SETUID, SETGID, KILL, DAC_OVERRIDE]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 64
+    mem_limit: 2g
+    cpus: 2
+    tmpfs: ["/tmp:rw,nosuid,nodev,size=512m,mode=1777"]
+    volumes: [code-spool:/runner_spool]
+    healthcheck:
+      test: [CMD, python, -c, "import os,time; assert time.time()-os.stat('/runner_spool/heartbeat').st_mtime < 150"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+  gateway:
+    image: edunote-gateway:0.1.0-beta.1
+    build: {context: ., dockerfile: Dockerfile.gateway}
+    entrypoint: [nginx, -c, /etc/nginx/edunote.conf, -g, "daemon off;"]
+    user: "101:101"
+    healthcheck:
+      test: [CMD-SHELL, "wget -S --spider http://127.0.0.1:8080/ 2>&1 | grep -q ' 401 '"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    ports: ["${EDUNOTE_BIND_ADDRESS:-127.0.0.1}:${FRONTEND_PORT:-3782}:8080"]
+    volumes:
+      - ./config/gateway/nginx.conf:/etc/nginx/edunote.conf:ro
+      - ./.edunote-access/owner.htpasswd:/etc/nginx/owner.htpasswd:ro
+    tmpfs: ["/tmp:rw,noexec,nosuid,size=32m,mode=1777", "/var/cache/nginx:rw,noexec,nosuid,size=32m,mode=1777"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [edunote]
+    depends_on:
+      edunote: {condition: service_healthy}
+  presenton:
+    healthcheck:
+      test: [CMD, curl, -fsS, http://127.0.0.1/api/v1/ppt/presentation/all]
+      interval: 20s
+      timeout: 10s
+      start_period: 90s
+      retries: 5
+    image: edunote-presenton:0.1.0-beta.1
+    command: ["/bin/sh", "-c", "chmod -R a+rX /app/servers/fastapi/static && exec node /app/start.js"]
+    build: {context: ./presenton, args: {NEXT_PUBLIC_BASE_PATH: /slide_pro/_presenton}}
+    profiles: [slides]
+    restart: unless-stopped
+    environment:
+      APP_DATA_DIRECTORY: /app_data
+      TEMP_DIRECTORY: /tmp/presenton
+      DATABASE_URL: postgresql://presenton:${PRESENTON_POSTGRES_PASSWORD:?Run start.sh to initialize credentials}@presenton-postgres:5432/presenton
+      REDIS_URL: redis://presenton-redis:6379/0
+      LLM: custom
+      CUSTOM_LLM_URL: ${PRESENTON_OPENAI_BASE_URL:-http://edunote:8001}
+      CUSTOM_LLM_API_KEY: ${PRESENTON_OPENAI_API_KEY:-}
+      CUSTOM_MODEL: ${PRESENTON_OPENAI_MODEL:-}
+      CAN_CHANGE_KEYS: "true"
+      PRESENTON_SEMANTIC_ICONS: ${PRESENTON_SEMANTIC_ICONS:-false}
+      DISABLE_IMAGE_GENERATION: "true"
+      NEXT_PUBLIC_BASE_PATH: /slide_pro/_presenton
+    volumes:
+      - presenton-data:/app_data
+      - ./presenton/servers/fastapi/services/icon_finder_service.py:/app/servers/fastapi/services/icon_finder_service.py:ro
+    networks: [edunote]
+    depends_on:
+      presenton-postgres: {condition: service_healthy}
+      presenton-redis: {condition: service_healthy}
+  presenton-postgres:
+    image: edunote-postgres:0.1.0-beta.1
+    build: {context: ., dockerfile: Dockerfile.postgres}
+    profiles: [slides]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: presenton
+      POSTGRES_DB: presenton
+      POSTGRES_PASSWORD: ${PRESENTON_POSTGRES_PASSWORD:?Run start.sh first}
+    volumes: [presenton-db:/var/lib/postgresql/data]
+    networks: [edunote]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U presenton -d presenton]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  presenton-redis:
+    image: edunote-redis:0.1.0-beta.1
+    build: {context: ., dockerfile: Dockerfile.redis}
+    profiles: [slides]
+    restart: unless-stopped
+    command: [redis-server, --appendonly, "yes"]
+    volumes: [presenton-redis:/data]
+    networks: [edunote]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+networks:
+  edunote:
+volumes:
+  model-cache:
+  code-spool:
+  presenton-data:
+  presenton-db:
+  presenton-redis:

@@ -1,0 +1,7 @@
+FROM python:3.11-slim
+COPY constraints.runner.txt /constraints.runner.txt
+RUN pip install --no-cache-dir -r /constraints.runner.txt && pip check
+COPY scripts/isolated_code_runner.py /runner.py
+WORKDIR /tmp
+ENV RUN_CODE_RUNNER_SPOOL=/runner_spool PYTHONDONTWRITEBYTECODE=1
+ENTRYPOINT ["python", "/runner.py"]

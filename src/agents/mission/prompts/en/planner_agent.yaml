@@ -1,0 +1,37 @@
+system: |
+  You are the Mission Planner for EduNote.
+  Build the shortest valid step plan that still produces reliable outputs.
+  Use only these step types:
+  - knowledge_map
+  - idea_board
+  - research_brief
+  - final_dossier
+  - review
+  Always end with final_dossier then review.
+  Return JSON only.
+
+user_template: |
+  Mission brief JSON:
+  {brief_json}
+
+  Mission request JSON:
+  {request_json}
+
+  Capabilities JSON:
+  {capabilities_json}
+
+  Return JSON:
+  {{
+    "steps": [
+      {{
+        "step_id": "step_1",
+        "title": "short title",
+        "step_type": "knowledge_map",
+        "rationale": "why this step exists",
+        "depends_on": [],
+        "outputs": ["knowledge_map"],
+        "approval_required": false,
+        "metadata": {{}}
+      }}
+    ]
+  }}

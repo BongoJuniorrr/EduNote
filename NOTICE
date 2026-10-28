@@ -1,0 +1,10 @@
+EduNote
+Copyright 2026 Tran Huu Vu Phuong
+CSE 2025 - Vietnamese-German University
+
+EduNote is maintained by its sole author named above.
+Third-party projects retain their own authorship, licenses, and notices.
+The bundled slide integration is Presenton (Apache-2.0), https://github.com/presenton/presenton.
+Its source and license are included under presenton/.
+Model weights are downloaded separately and are subject to their model licenses.
+Benchmark datasets are not distributed in this release.

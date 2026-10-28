@@ -1,0 +1,105 @@
+{
+  "checked_at": "2026-10-27T19:58:01.162207+00:00",
+  "model": "Qwen/Qwen3.5-9B:Q6_K",
+  "method": "Streaming chat/completions; fixed 1..16 counting prompt, max_tokens=64, temperature=0; sequential then concurrency=2. No retries.",
+  "requests": 8,
+  "successful": 8,
+  "status_counts": {
+    "200": 8
+  },
+  "wall_seconds": 32.74859227600973,
+  "latency_seconds": {
+    "p50": 1.844195122946985,
+    "p95": 20.430515942978673,
+    "p99": 20.430515942978673
+  },
+  "ttft_seconds": {
+    "p50": 0.45023073302581906,
+    "p95": 19.03581744490657,
+    "p99": 19.03581744490657
+  },
+  "samples": [
+    {
+      "index": 1,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 20.430515942978673,
+      "ttft_seconds": 19.03581744490657,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 2,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.827981292968616,
+      "ttft_seconds": 0.434524592012167,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 3,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.875195820000954,
+      "ttft_seconds": 0.47946351405698806,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 4,
+      "concurrency": 1,
+      "http_status": 200,
+      "seconds": 1.8293166159419343,
+      "ttft_seconds": 0.44126710994169116,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 5,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 1.844195122946985,
+      "ttft_seconds": 0.45023073302581906,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 6,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 3.3941722640302032,
+      "ttft_seconds": 2.005807879031636,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 7,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 1.8367224300745875,
+      "ttft_seconds": 0.43727665406186134,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    },
+    {
+      "index": 8,
+      "concurrency": 2,
+      "http_status": 200,
+      "seconds": 3.3887489460175857,
+      "ttft_seconds": 1.9955331860110164,
+      "finish_reason": "stop",
+      "content_characters": 38,
+      "usage": {}
+    }
+  ],
+  "limitations": "Small deployment-specific sample, includes network/proxy/model-load latency. Provider inference hardware is not assumed to match the EduNote application server. Token throughput is omitted when the upstream stream does not report usage.",
+  "percentile_method": "nearest-rank, includes all successful requests including first request"
+}
