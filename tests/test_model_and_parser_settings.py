@@ -244,6 +244,7 @@ def test_upload_stays_inside_raw_and_preserves_old_file_on_limit(tmp_path, monke
 
 
 def test_mineru_v4_preserves_page_numbers(tmp_path, monkeypatch):
+    monkeypatch.setattr(docs, "_PARSER_WORKER", True)
     import importlib.metadata
     import sys
     from types import ModuleType, SimpleNamespace

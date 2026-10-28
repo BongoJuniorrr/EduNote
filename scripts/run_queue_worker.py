@@ -11,6 +11,7 @@ import httpx
 from src.services.llm import get_llm_config
 from src.services.ocr import ensure_ocr_allowed, extract_basic, extract_heavy
 from src.services.queue import QueueWorker
+from src.services.document_previews import run_document_preview
 from src.services.rag.service import DEFAULT_KB_BASE_DIR
 from src.services.storage import get_storage_service
 from src.services.tts.kokoro_tts import KokoroTTS
@@ -94,6 +95,7 @@ async def run_ocr_remote(payload, job):
 
 if __name__ == "__main__":
     worker = QueueWorker()
+    worker.register("document_preview", run_document_preview, requires_gpu=False)
     worker.register("tts", run_tts, requires_gpu=True)
     worker.register("rag_query_gpu", run_rag_query, requires_gpu=True)
     worker.register("rag_query_remote", run_rag_query, requires_gpu=False)
