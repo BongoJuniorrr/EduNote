@@ -2,6 +2,7 @@
 set -euo pipefail
 umask 077
 PROJECT_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd -- "${PROJECT_ROOT}"
 BACKUP_ROOT="${EDUNOTE_BACKUP_ROOT:-./backups}"
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 exec 9>"${EDUNOTE_BACKUP_LOCK:-/tmp/edunote-backup.lock}"
@@ -11,7 +12,7 @@ cleanup_deployment_copy() {
   python3 -c 'import shutil,sys; shutil.rmtree(sys.argv[1])' "${DEPLOYMENT_COPY}"
 }
 trap cleanup_deployment_copy EXIT
-for file in .env EduNote.env Dockerfile docker-compose.prod.yml docker-compose.release.yml docker-compose.access.yml requirements.txt constraints.runtime.txt constraints.security.txt; do
+for file in .env EduNote.env compose.yaml compose.gpu.yaml start.sh README.md Dockerfile docker-compose.prod.yml docker-compose.release.yml docker-compose.access.yml requirements.txt constraints.runtime.txt constraints.security.txt; do
   if [[ -f "${PROJECT_ROOT}/${file}" ]]; then
     install -m 600 -- "${PROJECT_ROOT}/${file}" "${DEPLOYMENT_COPY}/${file}"
   fi

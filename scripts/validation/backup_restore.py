@@ -97,7 +97,9 @@ def snapshot(sources, destination):
                         raise ValueError('Source changed while copying; quiesce writers and retry')
                 target.chmod(0o600)
                 entries.append({'path': relative, 'bytes': target.stat().st_size, 'sha256': digest(target), 'sqlite': source in databases})
-            if inventory(root) != source_files or any(digest(path) != value for path, value in stable.items()):
+            if ([p for p in inventory(root) if p not in sidecars]
+                    != [p for p in source_files if p not in sidecars]
+                    or any(digest(path) != value for path, value in stable.items())):
                 raise ValueError('Sources changed during snapshot; quiesce writers and retry')
         manifest = {'format': 1, 'created_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
                     'directories': directories, 'files': entries,
