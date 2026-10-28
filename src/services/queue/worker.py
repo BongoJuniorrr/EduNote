@@ -6,6 +6,7 @@ import logging
 import os
 import time
 import threading
+import sqlite3
 import uuid
 from typing import Any, Callable
 from pathlib import Path
@@ -82,7 +83,13 @@ class QueueWorker:
         heartbeat.parent.mkdir(parents=True, exist_ok=True)
         while True:
             heartbeat.touch()
-            processed = self.run_once()
+            try:
+                processed = self.run_once()
+            except sqlite3.OperationalError as error:
+                if "locked" not in str(error).lower() and "busy" not in str(error).lower():
+                    raise
+                logger.warning("Queue database is busy; retrying on the next poll")
+                processed = None
             if processed is None:
                 time.sleep(poll_seconds)
 

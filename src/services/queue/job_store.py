@@ -50,6 +50,9 @@ class PersistentJobStore:
 
     def _initialize(self) -> None:
         with self._connect() as connection:
+            # Polling must remain readable while a worker commits status or a
+            # heartbeat. Keep SQLite's default FULL synchronous durability.
+            connection.execute("PRAGMA journal_mode = WAL")
             connection.execute(
                 """
                 CREATE TABLE IF NOT EXISTS jobs (

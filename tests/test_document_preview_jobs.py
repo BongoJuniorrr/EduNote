@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import sys
 import time
+import sqlite3
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -130,3 +131,26 @@ def test_worker_health_heartbeat_continues_during_parser_job(tmp_path, monkeypat
 
     worker.register("long_parser", handler)
     assert worker.run_once().status == "completed"
+
+
+def test_status_read_does_not_block_during_writer_transaction(setup):
+    client, store, _ = setup
+    test_id = enqueue(client).json()["test_id"]
+    with store._connect() as writer:
+        writer.execute("BEGIN EXCLUSIVE")
+        writer.execute("UPDATE jobs SET status='running' WHERE id=?", (test_id,))
+        assert client.get(f"/documents/tests/{test_id}").json()["status"] == "queued"
+    assert client.get(f"/documents/tests/{test_id}").json()["status"] == "running"
+
+
+def test_status_reports_temporary_lock_as_retryable_json(setup, monkeypatch):
+    client, store, _ = setup
+
+    def locked(*args):
+        raise sqlite3.OperationalError("database is locked")
+
+    monkeypatch.setattr(store, "get", locked)
+    response = client.get("/documents/tests/example")
+    assert response.status_code == 503
+    assert response.headers["Retry-After"] == "2"
+    assert "queue is busy" in response.json()["detail"]

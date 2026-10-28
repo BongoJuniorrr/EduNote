@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import shutil
 import uuid
+import sqlite3
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
@@ -62,7 +63,12 @@ async def test_document(file: UploadFile = File(...), background: bool = False,
             snapshot = directory / "config.json"
             snapshot.write_text(cfg.model_dump_json())
             snapshot.chmod(0o600)
-            job = get_job_store().enqueue(user.id, "document_preview", {"preview_id": preview_id})
+            try:
+                job = get_job_store().enqueue(user.id, "document_preview", {"preview_id": preview_id})
+            except sqlite3.OperationalError as error:
+                if not any(word in str(error).lower() for word in ("locked", "busy")):
+                    raise
+                raise HTTPException(503, "The document queue is busy. Retry shortly.", headers={"Retry-After": "2"}) from error
             queued = True
             return JSONResponse({"test_id": job.id, "status": job.status}, status_code=202)
         try:
@@ -83,6 +89,10 @@ async def get_document_test(test_id: str, user: AuthenticatedUser = Depends(get_
         job = get_job_store().get(test_id, user.id)
     except LookupError as error:
         raise HTTPException(404, "Document test not found") from error
+    except sqlite3.OperationalError as error:
+        if not any(word in str(error).lower() for word in ("locked", "busy")):
+            raise
+        raise HTTPException(503, "The document queue is busy. Retry shortly.", headers={"Retry-After": "2"}) from error
     if job.kind != "document_preview":
         raise HTTPException(404, "Document test not found")
     return {"test_id": job.id, "status": job.status, "result": job.result, "error": job.error}

@@ -52,7 +52,13 @@ export default function DocumentSettings() {
         const deadline = Date.now() + ((config?.timeout_seconds || 300) + 600) * 1000;
         let data;
         while (Date.now() < deadline) {
-          const state = await readApiResponse(await apiFetch(apiUrl(`/api/v1/config/documents/tests/${encodeURIComponent(started.test_id)}`), { cache: "no-store", signal: controller.signal }));
+          const poll = await apiFetch(apiUrl(`/api/v1/config/documents/tests/${encodeURIComponent(started.test_id)}`), { cache: "no-store", signal: controller.signal });
+          if ([502, 503, 504, 524].includes(poll.status)) {
+            setMessage("Document test is still being checked. Retrying the status request…");
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            continue;
+          }
+          const state = await readApiResponse(poll);
           if (state.status === "completed") { data = state.result; break; }
           if (["failed", "cancelled"].includes(state.status)) throw new Error(state.error || "Document test was cancelled");
           setMessage(state.status === "queued" ? "Document test queued. Waiting for the parser worker…" : "Extracting document… First use may download parser models. You can keep using other features.");
