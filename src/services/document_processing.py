@@ -8,12 +8,57 @@ import asyncio
 import base64
 import importlib.util
 import os
+import json
+import signal
+import sys
 from pathlib import Path
 import tempfile
 from typing import Literal
 
 import httpx
 from pydantic import BaseModel, Field
+
+_PARSER_WORKER = False
+
+
+async def run_parser_process(path: Path, output: Path, cfg, operation="preview"):
+    """Isolate model startup, imports and child processes from the API server.
+
+    Some agent imports add src/ to sys.path. Multiprocessing inherits that path
+    and imports src/logging instead of Python's logging module. A fresh module
+    entrypoint with a clean PYTHONPATH avoids this and permits a hard timeout.
+    """
+    root = Path(__file__).resolve().parents[2]
+    with tempfile.TemporaryDirectory(prefix="edunote-parser-worker-") as directory:
+        request = Path(directory) / "request.json"
+        result = Path(directory) / "result.json"
+        request.write_text(json.dumps({"path": str(path.resolve()), "output": str(output.resolve()),
+                                       "config": cfg.model_dump(), "operation": operation}))
+        request.chmod(0o600)
+        env = {**os.environ, "PYTHONPATH": str(root)}
+        with tempfile.TemporaryFile() as errors:
+            process = await asyncio.create_subprocess_exec(
+                sys.executable, "-m", "src.services.document_processing",
+                str(request), str(result), cwd=str(root), env=env,
+                stdout=asyncio.subprocess.DEVNULL, stderr=errors, start_new_session=True,
+            )
+            try:
+                await asyncio.wait_for(process.wait(), timeout=cfg.timeout_seconds)
+                if not result.exists():
+                    raise ValueError("Parser process exited without a result. Check parser runtime dependencies.")
+                value = json.loads(result.read_text())
+                if process.returncode or "error" in value:
+                    raise ValueError(value.get("error", "Parser process failed"))
+                return value
+            except asyncio.TimeoutError as error:
+                raise ValueError(f"Document extraction timed out after {cfg.timeout_seconds} seconds") from error
+            finally:
+                if process.returncode is None:
+                    try:
+                        os.killpg(process.pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    await process.wait()
 
 SETTINGS_PATH = (
     Path(
@@ -158,6 +203,9 @@ async def _extract(parser: str, path: Path, output: Path, cfg: DocumentProcessin
             )
         return await parse_with_llamaparse(str(path), str(output), api_key=key)
     if parser in {"mineru", "mineru_http"}:
+        if not _PARSER_WORKER:
+            value = await run_parser_process(path, output, cfg.model_copy(update={"parser": parser}), "extract")
+            return value["blocks"], value["images"]
         from importlib.metadata import version
 
         if int(version("mineru").split(".")[0]) >= 4:
@@ -316,5 +364,35 @@ async def parse_document(file_path, output_dir, config=None) -> dict:
                 "warnings": warnings,
             }
         except Exception as error:
-            warnings.append(f"{parser}: {type(error).__name__}: {error}")
+            detail = str(error) or f"Extraction timed out after {cfg.timeout_seconds} seconds"
+            warnings.append(f"{parser}: {type(error).__name__}: {detail}")
     raise ValueError("Document extraction failed. " + "; ".join(warnings))
+
+
+async def preview_document(path, output, cfg):
+    result = await parse_document(path, output, config=cfg)
+    text = "\n\n".join(str(block.get("text", "")) for block in result["content_list"])
+    return {"parser": result["parser"], "blocks": len(result["content_list"]),
+            "preview": text[:4000], "warnings": result["warnings"]}
+
+
+if __name__ == "__main__":
+    _PARSER_WORKER = True
+    request = json.loads(Path(sys.argv[1]).read_text())
+    destination = Path(sys.argv[2])
+    cfg = DocumentProcessingConfig.model_validate(request["config"])
+    try:
+        if request["operation"] == "extract":
+            blocks, images = asyncio.run(_extract(cfg.parser, Path(request["path"]), Path(request["output"]), cfg))
+            value = {"blocks": blocks, "images": images}
+        else:
+            value = asyncio.run(preview_document(Path(request["path"]), Path(request["output"]), cfg))
+    except Exception as error:
+        message = f"{type(error).__name__}: {error}"
+        if cfg.api_key:
+            message = message.replace(cfg.api_key, "[redacted]")
+        destination.write_text(json.dumps({"error": message[:2000]}))
+        destination.chmod(0o600)
+        sys.exit(1)
+    destination.write_text(json.dumps(value, default=str))
+    destination.chmod(0o600)

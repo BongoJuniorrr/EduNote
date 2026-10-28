@@ -46,6 +46,7 @@ class QueueWorker:
                 try:
                     if not self.store.renew_lease(job.id, self.worker_id, self.lease_seconds):
                         return
+                    Path(os.getenv("EDUNOTE_QUEUE_HEARTBEAT", "/tmp/edunote-worker-heartbeat")).touch()
                 except Exception:
                     logger.exception("Could not renew queue lease")
 

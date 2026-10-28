@@ -57,7 +57,7 @@ export async function readApiResponse(response: Response): Promise<any> {
   try {
     data = JSON.parse(body);
   } catch {
-    throw new Error(`API request failed (${response.status}). ${response.status === 504 || response.status === 502 ? "The server timed out or could not reach the backend." : "The server returned an invalid response."}`);
+    throw new Error(`API request failed (${response.status}). ${[502, 504, 524].includes(response.status) ? "The server or upstream proxy timed out. A background task may still be running; check its status before retrying." : "The server returned an invalid response."}`);
   }
   if (!response.ok) {
     throw new Error(typeof data.detail === "string" ? data.detail : `API request failed (${response.status})`);
