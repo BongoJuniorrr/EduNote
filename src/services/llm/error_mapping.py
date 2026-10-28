@@ -7,6 +7,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import logging
+import re
 from typing import Callable, List, Optional, Type
 
 # Import unified exceptions from exceptions.py
@@ -47,7 +48,7 @@ def _instance_of(*types: Type[BaseException]) -> ErrorClassifier:
 def _message_contains(*needles: str) -> ErrorClassifier:
     def _classifier(exc: Exception) -> bool:
         msg = str(exc).lower()
-        return any(needle in msg for needle in needles)
+        return any(re.search(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", msg) for needle in needles)
 
     return _classifier
 
@@ -91,6 +92,11 @@ except ImportError:
 
 def map_error(exc: Exception, provider: Optional[str] = None) -> LLMError:
     """Map provider-specific errors to unified internal exceptions."""
+    # Already classified errors carry authoritative status/metadata. Re-reading
+    # their formatted text can turn a 524 into 429 ("separate limit" contains
+    # the substring "rate limit") and duplicate provider/status prefixes.
+    if isinstance(exc, LLMError):
+        return exc
     if isinstance(exc, TimeoutError):
         return LLMTimeoutError(str(exc) or "Model request timed out.", provider=provider)
     # Heuristic check for status codes before rules
