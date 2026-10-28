@@ -51,6 +51,11 @@ def test_unclassified_rate_limit_still_maps_to_429():
     assert isinstance(map_error(Exception('Provider rate limit exceeded')), LLMRateLimitError)
 
 
+def test_underscored_quota_error_still_maps_to_429():
+    from src.services.llm.error_mapping import map_error
+    assert isinstance(map_error(Exception('insufficient_quota')), LLMRateLimitError)
+
+
 def test_mapping_preserves_rate_limit_retry_after():
     from src.services.llm.error_mapping import map_error
     error = LLMRateLimitError('Too many requests', retry_after=42, provider='local')

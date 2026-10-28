@@ -48,7 +48,10 @@ def _instance_of(*types: Type[BaseException]) -> ErrorClassifier:
 def _message_contains(*needles: str) -> ErrorClassifier:
     def _classifier(exc: Exception) -> bool:
         msg = str(exc).lower()
-        return any(re.search(r"(?<!\w)" + re.escape(needle) + r"(?!\w)", msg) for needle in needles)
+        return any(
+            re.search(r"(?<![a-z0-9])" + re.escape(needle) + r"(?![a-z0-9])", msg)
+            for needle in needles
+        )
 
     return _classifier
 
