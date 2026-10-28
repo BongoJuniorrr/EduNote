@@ -12,6 +12,32 @@ Utility functions for LLM service:
 import re
 from typing import Any, Optional
 
+
+def normalize_system_messages(messages: list[dict] | None) -> list[dict] | None:
+    """Combine system instructions into one leading message for strict templates.
+
+    Preserve conversation/tool order and structured content without mutating the
+    caller's history. An explicit messages array remains authoritative.
+    """
+    if not messages:
+        return messages
+    systems = [message for message in messages if message.get("role") == "system"]
+    if not systems:
+        return [dict(message) for message in messages]
+    contents = [message.get("content") or "" for message in systems]
+    if all(isinstance(content, str) for content in contents):
+        content = "\n\n".join(contents)
+    else:
+        content = []
+        for part in contents:
+            if isinstance(part, str):
+                content.append({"type": "text", "text": part})
+            else:
+                content.extend(part)
+    return [{"role": "system", "content": content}] + [
+        dict(message) for message in messages if message.get("role") != "system"
+    ]
+
 # Known cloud provider domains (should never be treated as local)
 CLOUD_DOMAINS = [
     ".openai.com",
