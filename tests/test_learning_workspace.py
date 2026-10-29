@@ -511,3 +511,30 @@ def test_evidence_accepts_only_named_server_catalog_directory(tmp_path, monkeypa
         "topic": "Explain optics", "kb_name": "Optics notes", "request_id": "catalog-check-02"})
     assert response.status_code == 202
     assert calls[0][1]["kb_name"] == "Optics notes"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("processed, expected", [(0, "error"), (1, "error"), (2, "completed"), (None, "completed")])
+async def test_upload_never_claims_success_for_failed_documents(tmp_path, monkeypatch, processed, expected):
+    from src.api.routers import knowledge as routes
+
+    events, recorded = [], []
+    staged = [tmp_path / "first.pdf", tmp_path / "second.pdf"] if processed is not None else []
+    async def process(files):
+        assert processed is not None, "Duplicate content must not be reindexed"
+        return files[:processed]
+    adder = SimpleNamespace(
+        add_documents=lambda *args, **kwargs: staged,
+        process_new_documents=process,
+        extract_numbered_items_for_new_docs=lambda *args, **kwargs: None,
+        update_metadata=recorded.append,
+    )
+    task = SimpleNamespace(generate_task_id=lambda *args: "upload-test", update_task_status=lambda *args, **kwargs: None)
+    tracker = SimpleNamespace(update=lambda stage, *args, **kwargs: events.append(stage.value))
+    monkeypatch.setattr(routes.TaskIDManager, "get_instance", lambda: task)
+    monkeypatch.setattr(routes, "ProgressTracker", lambda *args: tracker)
+    monkeypatch.setattr(routes, "DocumentAdder", lambda **kwargs: adder)
+    await routes.run_upload_processing_task("sample", str(tmp_path), "", "", ["first.pdf", "second.pdf"])
+    assert events[-1] == expected
+    assert recorded == ([] if processed is None else [processed])
+    assert ("completed" in events) is (expected == "completed")
