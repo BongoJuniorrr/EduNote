@@ -1,6 +1,6 @@
 name: edunote-beta
 x-app: &app
-  image: edunote:0.1.0-beta.1
+  image: edunote:0.1.0-beta.2
   build:
     context: .
     dockerfile: Dockerfile
@@ -54,7 +54,7 @@ services:
     depends_on:
       edunote: {condition: service_healthy}
   code-runner:
-    image: edunote-code-runner:0.1.0-beta.1
+    image: edunote-code-runner:0.1.0-beta.2
     build: {context: ., dockerfile: Dockerfile.code-runner}
     restart: unless-stopped
     network_mode: none
@@ -73,7 +73,7 @@ services:
       timeout: 5s
       retries: 3
   gateway:
-    image: edunote-gateway:0.1.0-beta.1
+    image: edunote-gateway:0.1.0-beta.2
     build: {context: ., dockerfile: Dockerfile.gateway}
     entrypoint: [nginx, -c, /etc/nginx/edunote.conf, -g, "daemon off;"]
     user: "101:101"
@@ -101,7 +101,7 @@ services:
       timeout: 10s
       start_period: 90s
       retries: 5
-    image: edunote-presenton:0.1.0-beta.1
+    image: edunote-presenton:0.1.0-beta.2
     command: ["/bin/sh", "-c", "chmod -R a+rX /app/servers/fastapi/static && exec node /app/start.js"]
     build: {context: ./presenton, args: {NEXT_PUBLIC_BASE_PATH: /slide_pro/_presenton}}
     profiles: [slides]
@@ -127,7 +127,7 @@ services:
       presenton-postgres: {condition: service_healthy}
       presenton-redis: {condition: service_healthy}
   presenton-postgres:
-    image: edunote-postgres:0.1.0-beta.1
+    image: edunote-postgres:0.1.0-beta.2
     build: {context: ., dockerfile: Dockerfile.postgres}
     profiles: [slides]
     restart: unless-stopped
@@ -143,7 +143,7 @@ services:
       timeout: 5s
       retries: 10
   presenton-redis:
-    image: edunote-redis:0.1.0-beta.1
+    image: edunote-redis:0.1.0-beta.2
     build: {context: ., dockerfile: Dockerfile.redis}
     profiles: [slides]
     restart: unless-stopped

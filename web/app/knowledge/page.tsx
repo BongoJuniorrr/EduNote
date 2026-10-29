@@ -1,5 +1,5 @@
 "use client";
-import { apiFetch } from '@/lib/api';
+import { apiFetch, readApiResponse } from '@/lib/api';
 
 import { useState, useEffect, useCallback, useRef } from "react";
 
@@ -496,7 +496,7 @@ export default function KnowledgePage() {
   const fetchKnowledgeBases = useCallback(() => apiFetch(apiUrl("/api/v1/knowledge/list"))
     .then(async response => {
       if (!response.ok) throw new Error(`Knowledge bases HTTP ${response.status}`);
-      const data = await response.json();
+      const data = await readApiResponse(response);
       if (!Array.isArray(data)) throw new Error("Invalid knowledge base response");
       return data;
     }).then(data => { setKbs(data); setError(null); })
@@ -533,7 +533,7 @@ export default function KnowledgePage() {
       try {
         const res = await apiFetch(apiUrl("/api/v1/knowledge/rag-providers"));
         if (res.ok) {
-          const data = await res.json();
+          const data = await readApiResponse(res);
           setRagProviders(data.providers || []);
         }
       } catch (err) {
@@ -724,7 +724,7 @@ export default function KnowledgePage() {
       );
       if (!res.ok) throw new Error("Failed to fetch chunks");
       
-      const data = await res.json();
+      const data = await readApiResponse(res);
       setChunkData(data);
       setChunkPage(page);
     } catch (err) {
@@ -859,13 +859,13 @@ export default function KnowledgePage() {
         body: formData,
       });
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await readApiResponse(res);
         showToast(errorData.detail || "Creation failed", "error");
         setUploading(false);
         return;
       }
 
-      const result = await res.json();
+      const result = await readApiResponse(res);
 
       setCreateModalOpen(false);
       clearAllFiles();

@@ -1,3 +1,5 @@
+import asyncio
+
 #!/usr/bin/env python
 """
 InvestigateAgent - Investigator
@@ -407,7 +409,7 @@ class InvestigateAgent(BaseAgent):
 
     async def _call_web_search(self, query: str, output_dir: str | None) -> dict[str, Any]:
         """Call Web Search"""
-        return web_search(query=query, output_dir=output_dir or "./cache", verbose=False)
+        return await asyncio.to_thread(web_search, query=query, output_dir=output_dir or "./cache", verbose=False)
 
     async def _call_query_item(self, identifier: str, kb_name: str) -> dict[str, Any]:
         """Call Query Item"""

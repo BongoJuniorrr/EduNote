@@ -43,8 +43,13 @@ class LightRAGIndexer(BaseComponent):
         """Get or create a LightRAG instance (text-only)."""
         working_dir = str(Path(self.kb_base_dir) / kb_name / "rag_storage")
 
-        if working_dir in self._instances:
-            return self._instances[working_dir]
+        from src.services.settings.fingerprint import model_fingerprint
+        cache_key = (working_dir, model_fingerprint())
+        if cache_key in self._instances:
+            return self._instances[cache_key]
+        for old_key in list(self._instances):
+            if old_key == working_dir or (isinstance(old_key, tuple) and old_key[0] == working_dir):
+                self._instances.pop(old_key, None)
 
         # Add LightRAG path
         project_root = Path(__file__).resolve().parent.parent.parent.parent.parent.parent
@@ -73,7 +78,7 @@ class LightRAGIndexer(BaseComponent):
                 embedding_func=embed_client.get_embedding_func(),  # Use proper EmbeddingFunc object
             )
 
-            self._instances[working_dir] = rag
+            self._instances[cache_key] = rag
             return rag
 
         except ImportError as e:

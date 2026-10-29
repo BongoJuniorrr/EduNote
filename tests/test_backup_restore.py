@@ -79,3 +79,45 @@ def test_unlisted_file_is_rejected(tmp_path):
     (snap / 'extra').write_text('not in manifest')
     with pytest.raises(ValueError, match='unlisted'):
         backup.verify(snap)
+
+
+def test_portable_backup_from_another_directory_includes_compose(tmp_path):
+    import shutil
+    import subprocess
+
+    project = tmp_path / "portable"
+    scripts = project / "scripts"
+    (scripts / "validation").mkdir(parents=True)
+    original = Path(__file__).parents[1]
+    for name in ("backup_edunote.sh", "validation/backup_restore.py"):
+        shutil.copy2(original / "scripts" / name, scripts / name)
+    for directory in ("data/user", "data/knowledge_bases", "data/storage", "config"):
+        (project / directory).mkdir(parents=True)
+    for name in ("compose.yaml", "compose.gpu.yaml", "start.sh", "README.md", ".env"):
+        (project / name).write_text("portable fixture")
+    (project / "data/storage/retained.txt").write_text("retained content")
+    subprocess.run(["bash", str(scripts / "backup_edunote.sh")], cwd=tmp_path, check=True,
+                   capture_output=True)
+    stamp = (project / "backups/snapshots/LATEST").read_text().strip()
+    destination = tmp_path / "restored"
+    backup.restore(project / "backups/snapshots" / stamp, destination)
+    assert (destination / "deployment/compose.yaml").read_text() == "portable fixture"
+    assert (destination / "deployment/compose.gpu.yaml").is_file()
+    assert (destination / "deployment/start.sh").is_file()
+    assert (destination / "storage/retained.txt").read_text() == "retained content"
+
+
+def test_wal_reader_coordination_files_do_not_invalidate_snapshot(tmp_path):
+    source = tmp_path / "wal_source"
+    source.mkdir()
+    database = source / "learning.sqlite3"
+    with sqlite3.connect(database) as db:
+        db.execute("PRAGMA journal_mode=WAL")
+        db.execute("CREATE TABLE evidence (value TEXT)")
+        db.execute("INSERT INTO evidence VALUES ('retained')")
+    db.close()
+    snapshot = tmp_path / "wal_snapshot"
+    backup.snapshot({"learning": source}, snapshot)
+    backup.restore(snapshot, tmp_path / "restored_wal")
+    with sqlite3.connect(tmp_path / "restored_wal/learning/learning.sqlite3") as restored:
+        assert restored.execute("SELECT value FROM evidence").fetchone() == ("retained",)

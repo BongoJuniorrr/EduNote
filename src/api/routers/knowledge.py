@@ -269,6 +269,13 @@ async def run_upload_processing_task(
             adder.extract_numbered_items_for_new_docs(processed_files, batch_size=20)
 
         adder.update_metadata(len(processed_files) if processed_files else 0)
+        if len(processed_files or []) != len(staged_files):
+            failed = len(staged_files) - len(processed_files or [])
+            raise RuntimeError(
+                f"{failed} of {len(staged_files)} documents could not be indexed. "
+                "Successfully indexed documents were retained. Check parser settings "
+                "and retry the failed files."
+            )
 
         # Update folder sync state if this was a folder sync
         if folder_id and processed_files:
@@ -574,6 +581,12 @@ async def upload_files(
 
         logger.info(f"Uploading {len(uploaded_files)} files to KB '{kb_name}'")
 
+        ProgressTracker(kb_name, get_kb_base_dir()).update(
+            ProgressStage.PROCESSING_DOCUMENTS,
+            f"Queued {len(uploaded_files)} files for indexing...",
+            current=0,
+            total=len(uploaded_files),
+        )
         background_tasks.add_task(
             run_upload_processing_task,
             kb_name=kb_name,

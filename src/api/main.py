@@ -21,6 +21,7 @@ from src.api.routers import (
     guide,
     ideagen,
     jobs,
+    learning,
     knowledge,
     mission,
     notebook,
@@ -366,6 +367,7 @@ app.include_router(co_writer.router, prefix="/api/v1/co_writer", tags=["co_write
 app.include_router(notebook.router, prefix="/api/v1/notebook", tags=["notebook"])
 app.include_router(guide.router, prefix="/api/v1/guide", tags=["guide"])
 app.include_router(ideagen.router, prefix="/api/v1/ideagen", tags=["ideagen"])
+app.include_router(learning.router, prefix="/api/v1/learning", tags=["learning"])
 app.include_router(jobs.router, prefix="/api/v1/jobs", tags=["jobs"])
 app.include_router(edu_studio.router, prefix="/api/v1/edu-studio", tags=["edu-studio"])
 if _env_flag("ENABLE_LEGACY_SLIDE_PRO", "false"):

@@ -7,12 +7,67 @@ Edu Studio, and presentations through Presenton.
 **Author:** Tran Huu Vu Phuong (CSE 2025 - Vietnamese-German University)  
 **Official demo:** https://edunote.thvphuong.id.vn  
 **Repository:** https://github.com/BongoJuniorrr/EduNote  
-**Release:** `v0.1.0-beta.1` · Linux x86-64 · first beta
+**Release:** `v0.1.0-beta.2` · Linux x86-64 · sourced learning workspace beta
 
 > This is a prerelease for a trusted, single-owner deployment. The functional checks
 > below have passed, but the legacy GPU dependency profile still has known security
 > advisories. It is **not a zero-vulnerability or unrestricted production release**.
 > See the security status below. The demo requires its owner's shared password.
+
+## Learning workspace
+
+Included in this beta:
+
+- **Evidence Workspace** (`/evidence`): select a knowledge base or notebook, ask a question,
+  inspect saved source excerpts and open original PDF pages when available. No retrieved
+  evidence means no generated answer. Notebook content may itself be AI-generated.
+- **Study Packs** (`/study-packs`): generate cited goals, summaries, concept relationships,
+  validated quizzes with explanations and a rubric from an evidence snapshot. Export JSON,
+  Markdown or plain text. For slides, upload the text (.txt) export into Slide Generator, powered by
+  [Presenton](https://github.com/presenton/presenton); slide generation uses Presenton's provider settings.
+- **Adaptive Review** (`/review`): enroll a pack's quiz, submit answers and schedule personal
+  spaced reviews. The schedule is SM-2 inspired, not a calibrated mastery prediction.
+  Export/restore the learning backup here; restore merges atomically and refuses conflicts
+  rather than overwriting newer progress.
+- **Job Center** (`/jobs`): follow background extraction, evidence, study and diagnostic jobs,
+  reopen results, cancel local execution and retry supported jobs with current settings.
+  Remote providers can continue an already-sent inference request after local cancellation.
+- **Settings Diagnostics** (`/settings/diagnostics`): run separate runtime, text, multi-turn,
+  JSON, vision, embedding, parser and Presenton checks. Each result states what was tested;
+  a successful text test does not certify OCR, retrieval quality or slide generation.
+
+Start the queue worker together with the API (Compose starts `queue-worker`; for a source
+setup run `python scripts/run_queue_worker.py`). Both processes must share
+`EDUNOTE_QUEUE_DB`, `EDUNOTE_STORAGE_ROOT` and Settings storage. Learning data lives under
+`learning/workspace.sqlite3` inside workspace storage; include it in backups. A queued job
+fails explicitly if its saved configuration fingerprint no longer matches active settings.
+Long-running interactive chat/solver sessions are not migrated into durable jobs.
+
+## Beta 2 validation
+
+Beta 2 adds the learning workspace and durable jobs, preserves upstream LLM error
+codes, and runs document previews as background jobs so a reverse proxy timeout
+does not discard the extraction job. Backup now anchors relative paths to the project directory, includes portable
+Compose startup files and ignores SQLite WAL/SHM coordination-file churn.
+Existing knowledge indexes still require
+reindexing when their parser or embedding model changes.
+
+The release was checked with 230 passing backend regression tests (5 skipped and
+5 external-integration tests deselected), a production frontend build and TypeScript,
+and browser checks of the learning pages and existing core pages. The actual
+configured Qwen endpoint was also used for Evidence → Study Pack → quiz → review
+persistence → restore and text/multiturn/JSON diagnostics. These are functional
+checks on synthetic material, not a benchmark of generated educational accuracy.
+
+A fresh server performance sample completed 12/12 streaming requests: median
+response 1.88 s and median time to first visible token 0.46 s; p95 response 9.30 s
+and p95 first-token latency 7.87 s, including the first request. See
+[observations and methodology](benchmarks/results/server-performance-beta2.json).
+The model used one Tesla P100 16 GiB on the same server while other GPU processes
+continued; the sample does not establish a concurrency SLA. Earlier public SciFact
+and FUNSD measurements below are retained with their original scope and dates.
+Frontend lint has zero errors and 457 existing warnings. Dependency-security
+limitations remain disclosed at the end of this README.
 
 ## Run the prebuilt beta
 
@@ -24,12 +79,12 @@ local embedding weights download on first use. Model weights, datasets, personal
 credentials are deliberately not bundled. NVIDIA GPU is optional; local models
 run much more slowly on CPU.
 
-1. From the [release page](https://github.com/BongoJuniorrr/EduNote/releases/tag/v0.1.0-beta.1),
-   download **all** `EduNote-0.1.0-beta.1-linux-amd64-part*.zip` assets and `SHA256SUMS`.
+1. From the [release page](https://github.com/BongoJuniorrr/EduNote/releases/tag/v0.1.0-beta.2),
+   download **all** `EduNote-0.1.0-beta.2-linux-amd64-part*.zip` assets and `SHA256SUMS`.
    Runtime images exceed GitHub's per-file limit, so they are divided across ZIPs.
 2. Verify the ZIP checksums: `sha256sum --ignore-missing -c SHA256SUMS`. Extract every ZIP into the
    **same directory**. Part 1 contains this README, the launcher, and source code.
-3. Enter the extracted `EduNote-0.1.0-beta.1` directory and run `bash start.sh`. It checks runtime-part hashes, imports the prebuilt images,
+3. Enter the extracted `EduNote-0.1.0-beta.2` directory and run `bash start.sh`. It checks runtime-part hashes, imports the prebuilt images,
    generates a new private owner password, and starts the containers. No application
    build is needed. Keep `.env` and `.edunote-access/` private.
 4. Open http://localhost:3782. Username: **owner**. Read your generated password
@@ -257,20 +312,24 @@ are separate from the application license.
 
 ## Security status
 
-The first beta is intended for a trusted, single-owner deployment behind the shared
+This beta is intended for a trusted, single-owner deployment behind the shared
 owner password and HTTPS. It has **not** cleared the production dependency-security
 gate. Do not interpret the prerelease or functional test results as a security certification.
 
-The reviewed Python runtime scan dated 2026-10-28 reports 56 advisory entries across:
+The reviewed Python runtime scan dated 2026-10-29 reports 72 advisory entries across:
 
 | Package | Bundled version | Advisory entries | Reported fixed versions |
 | --- | --- | --- | --- |
-| Pillow | 12.3.0 | 38 | 13.0.0 |
+| Pillow | 12.3.0 | 39 | 13.0.0 |
 | lightrag-hku | 1.4.16 | 9 | 1.5.4 / 1.5.5 |
 | transformers | 4.57.6 | 9 | Up to 5.10.0 required across findings |
+| pip | 24.0 | 12 | Up to 26.2.0 required across findings |
+| setuptools | 82.0.1 | 3 | Up to 84.1.0 required across findings |
 
-Entries can overlap CVEs; this is not a count of unique vulnerabilities. The patch
-set reduced the initial scan from 112 entries to 56, without suppressing findings.
+Entries can overlap CVEs; this is not a count of unique vulnerabilities. The scan
+includes bundled packaging tools. Frontend production dependency audit reports
+zero known advisories at the time of this release. Python dependencies retain the
+verified runtime versions in this beta; the advisory findings are not suppressed.
 RAGAnything currently requires LightRAG <1.5, Gradio requires Pillow <13, and tested
 new Transformers releases were incompatible with the verified P100 Torch 2.4.1
 runtime. Upgrading these together needs a separate runtime migration and rerunning

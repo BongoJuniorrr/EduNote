@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import httpx
 
+from src.services.document_previews import run_document_preview
 from src.services.llm import get_llm_config
 from src.services.ocr import ensure_ocr_allowed, extract_basic, extract_heavy
 from src.services.queue import QueueWorker
@@ -92,12 +93,22 @@ async def run_ocr_remote(payload, job):
     return {"text": content[:100_000], "engine": "workspace-openai-compatible-ocr"}
 
 
-if __name__ == "__main__":
+def build_worker():
     worker = QueueWorker()
-    worker.register("tts", run_tts, requires_gpu=True)
-    worker.register("rag_query_gpu", run_rag_query, requires_gpu=True)
-    worker.register("rag_query_remote", run_rag_query, requires_gpu=False)
-    worker.register("ocr_basic", run_ocr_basic, requires_gpu=False)
-    worker.register("ocr_heavy", run_ocr_heavy, requires_gpu=True)
-    worker.register("ocr_remote", run_ocr_remote, requires_gpu=False)
-    worker.run_forever()
+    worker.register("document_preview", run_document_preview, isolated=True)
+    worker.register("tts", run_tts, requires_gpu=True, isolated=True)
+    worker.register("rag_query_gpu", run_rag_query, requires_gpu=True, isolated=True)
+    worker.register("rag_query_remote", run_rag_query, isolated=True)
+    worker.register("ocr_basic", run_ocr_basic, isolated=True)
+    worker.register("ocr_heavy", run_ocr_heavy, requires_gpu=True, isolated=True)
+    worker.register("ocr_remote", run_ocr_remote, isolated=True)
+    from src.services.learning.workflows import run_diagnostics, run_evidence, run_study_pack
+
+    worker.register("evidence", run_evidence, isolated=True)
+    worker.register("study_pack", run_study_pack, isolated=True)
+    worker.register("settings_diagnostics", run_diagnostics, isolated=True)
+    return worker
+
+
+if __name__ == "__main__":
+    build_worker().run_forever()

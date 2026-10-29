@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { apiFetch, apiUrl } from "@/lib/api";
+import { useEffect, useRef, useState } from "react";
+import { apiFetch, apiUrl, readApiResponse } from "@/lib/api";
 
 type ParserConfig = {
   parser: string; fallback: string; base_url: string; model: string;
@@ -18,41 +18,58 @@ export default function DocumentSettings() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(false);
+  const activeTest = useRef<AbortController | null>(null);
   const inputClass = "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100";
 
   useEffect(() => {
     apiFetch(apiUrl("/api/v1/config/documents")).then(async response => {
-      if (!response.ok) throw new Error("Cannot load document settings");
-      const data = await response.json();
+      const data = await readApiResponse(response);
       setConfig(data.config); setPresets(data.presets);
       const match = data.presets.find((x: Preset) => x.parser === data.config.parser && (!x.model || x.model === data.config.model));
       setPreset(match?.id || "auto");
     }).catch(e => { setError(true); setMessage(e.message); });
   }, []);
+  useEffect(() => () => activeTest.current?.abort(), []);
 
   const save = async () => {
     const response = await apiFetch(apiUrl("/api/v1/config/documents"), {
       method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(config),
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Invalid parser configuration");
+    const data = await readApiResponse(response);
     setConfig(data.config);
   };
 
   const submit = async (test: boolean) => {
     setBusy(true); setMessage(""); setError(false); setPreview("");
+    const controller = new AbortController();
+    activeTest.current = controller;
     try {
       await save();
       if (test && file) {
         const body = new FormData(); body.append("file", file);
-        const response = await apiFetch(apiUrl("/api/v1/config/documents/test"), { method: "POST", body });
-        const data = await response.json();
-        if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Extraction failed");
+        const response = await apiFetch(apiUrl("/api/v1/config/documents/test?background=true"), { method: "POST", body, signal: controller.signal });
+        const started = await readApiResponse(response);
+        const deadline = Date.now() + ((config?.timeout_seconds || 300) + 600) * 1000;
+        let data;
+        while (Date.now() < deadline) {
+          const poll = await apiFetch(apiUrl(`/api/v1/config/documents/tests/${encodeURIComponent(started.test_id)}`), { cache: "no-store", signal: controller.signal });
+          if ([502, 503, 504, 524].includes(poll.status)) {
+            setMessage("Document test is still being checked. Retrying the status request…");
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            continue;
+          }
+          const state = await readApiResponse(poll);
+          if (state.status === "completed") { data = state.result; break; }
+          if (["failed", "cancelled"].includes(state.status)) throw new Error(state.error || "Document test was cancelled");
+          setMessage(state.status === "queued" ? "Document test queued. Waiting for the parser worker…" : "Extracting document… First use may download parser models. You can keep using other features.");
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        if (!data) throw new Error("The document test is still waiting or processing. Check worker availability before submitting another test.");
         setMessage(`Extracted ${data.blocks} blocks with ${data.parser}. ${(data.warnings || []).join("; ")}`);
         setPreview(data.preview);
       } else setMessage("Document settings saved. Changes apply to new ingestion and reindexing.");
-    } catch (e) { setError(true); setMessage(e instanceof Error ? e.message : "Request failed"); }
-    finally { setBusy(false); }
+    } catch (e) { if (!controller.signal.aborted) { setError(true); setMessage(e instanceof Error ? e.message : "Request failed"); } }
+    finally { if (!controller.signal.aborted) setBusy(false); }
   };
 
   if (!config) return <div className="p-6">{message || "Loading document settings..."}</div>;
@@ -72,6 +89,7 @@ export default function DocumentSettings() {
         <option value="flash">Flash · native digital text (no OCR)</option><option value="basic">Basic · local ONNX OCR, tables and formulas</option><option value="standard">Standard · layout and document understanding</option><option value="advanced">Advanced · larger vision model</option>
       </select>
     </label>}
+    {config.parser === "mineru" && ["standard", "advanced"].includes(config.mineru_tier || "basic") && <p className="text-sm text-amber-600 dark:text-amber-400">This tier loads an additional vision model. First startup may take several minutes. Increase the extraction timeout if needed; Basic uses the lighter ONNX pipeline.</p>}
     {endpoint && <>
       <label className="block">Parser endpoint
         <input aria-label="Parser endpoint" type="url" autoComplete="off" className={inputClass} value={config.base_url} onChange={e => setConfig({ ...config, base_url: e.target.value })} />

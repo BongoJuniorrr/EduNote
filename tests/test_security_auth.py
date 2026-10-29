@@ -60,8 +60,8 @@ def test_jobs_use_local_workspace_and_allow_reading_legacy_jobs(tmp_path, monkey
     client = TestClient(app)
     assert client.get(f"/api/v1/jobs/{old.id}").status_code == 200
     response = client.post("/api/v1/jobs", json={"kind": "test", "payload": {}})
-    assert response.status_code == 202
-    assert response.json()["job"]["owner_id"] == "local"
+    # Single-owner legacy jobs remain readable; new work must use typed routes.
+    assert response.status_code == 422
 
 
 def test_kb_query_and_provider_use_workspace_config(tmp_path, monkeypatch):

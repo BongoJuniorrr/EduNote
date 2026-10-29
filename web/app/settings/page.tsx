@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { apiFetch } from '@/lib/api';
 
 import { useState, useEffect } from "react";
@@ -107,6 +108,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="max-w-6xl mx-auto p-6">
+      <Link href="/settings/diagnostics" className="inline-block mb-4 text-blue-400 underline">{t("Settings Diagnostics — test models, parser and services")}</Link>
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl">

@@ -23,6 +23,7 @@ from llama_index.core.bridge.pydantic import PrivateAttr
 
 from src.logging import get_logger
 from src.services.embedding import get_embedding_client, get_embedding_config
+from src.services.embedding.config import embedding_signatures_match
 
 # Default knowledge base directory
 DEFAULT_KB_BASE_DIR = str(
@@ -261,7 +262,7 @@ class LlamaIndexPipeline:
                 "dimensions": cfg.dim,
                 "base_url": cfg.base_url,
             }
-            if json.loads(signature_path.read_text()) != signature:
+            if not embedding_signatures_match(json.loads(signature_path.read_text()), signature):
                 raise ValueError(
                     "Embedding configuration changed. Reindex this knowledge base before searching."
                 )
@@ -307,13 +308,7 @@ class LlamaIndexPipeline:
             import traceback
 
             self.logger.error(traceback.format_exc())
-            return {
-                "query": query,
-                "answer": f"Search failed: {str(e)}",
-                "content": "",
-                "mode": mode,
-                "provider": "llamaindex",
-            }
+            raise RuntimeError("Knowledge retrieval failed. Check the index and embedding configuration.") from e
 
     async def add_documents(self, kb_name: str, file_paths: List[str], **kwargs) -> bool:
         """
@@ -343,7 +338,7 @@ class LlamaIndexPipeline:
             "dimensions": cfg.dim,
             "base_url": cfg.base_url,
         }
-        if signature_path.exists() and json.loads(signature_path.read_text()) != signature:
+        if signature_path.exists() and not embedding_signatures_match(json.loads(signature_path.read_text()), signature):
             raise ValueError("Embedding configuration changed. Reindex before adding documents.")
 
         try:

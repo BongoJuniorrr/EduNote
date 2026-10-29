@@ -93,7 +93,12 @@ def get_embedding_config() -> EmbeddingConfig:
                 binding=config.get("provider", "openai"),
                 model=config["model"],
                 api_key=config.get("api_key", ""),
-                base_url=config.get("base_url"),
+                # HuggingFace adapter runs locally and never consumes an HTTP
+                # base URL. Compose defaults must not create false drift across
+                # API/worker processes or invalidate a compatible local index.
+                base_url=None
+                if config.get("provider") == "huggingface"
+                else config.get("base_url"),
                 api_version=config.get("api_version"),
                 dim=int(config.get("dimensions", 3072)),
             )
@@ -104,7 +109,7 @@ def get_embedding_config() -> EmbeddingConfig:
     binding = env_binding or "openai"
     model = env_model
     api_key = _strip_value(os.getenv("EMBEDDING_API_KEY"))
-    base_url = _strip_value(os.getenv("EMBEDDING_HOST"))
+    base_url = None if binding == "huggingface" else _strip_value(os.getenv("EMBEDDING_HOST"))
     api_version = _strip_value(os.getenv("EMBEDDING_API_VERSION"))
     dim_str = _strip_value(os.getenv("EMBEDDING_DIMENSION"))
 
@@ -156,3 +161,12 @@ def get_embedding_config() -> EmbeddingConfig:
         truncate=truncate,
         late_chunking=late_chunking,
     )
+
+
+def embedding_signatures_match(stored: dict, current: dict) -> bool:
+    """Ignore historical, unused HTTP defaults only for local HF indexes."""
+    left, right = dict(stored), dict(current)
+    if left.get("provider") == right.get("provider") == "huggingface":
+        left.pop("base_url", None)
+        right.pop("base_url", None)
+    return left == right
